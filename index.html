@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아텍에서 살아남기</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <!-- p5.js -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.13/lib/p5.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.13/lib/addons/p5.sound.min.js"></script>
+
+  <!-- Assets (preload 정의 - 반드시 sketch.js보다 먼저!) -->
+  <script src="assets/assetLoader.js"></script>
+
+  <!-- Core -->
+  <script src="core/objectPool.js"></script>
+  <script src="core/damageText.js"></script>
+  <script src="core/gem.js"></script>
+  <script src="core/projectile.js"></script>
+  <script src="core/enemy.js"></script>
+  <script src="core/player.js"></script>
+
+  <!-- Data -->
+  <script src="data/passive.js"></script>
+
+  <!-- Effects (이펙트 시스템 - weapons보다 먼저 로드) -->
+  <script src="effects/baseEffect.js"></script>
+  <script src="effects/effectManager.js"></script>
+  <script src="effects/particleEffects.js"></script>
+  <script src="effects/skillEffects.js"></script>
+
+  <!-- Weapons (base → 개별 스킬) -->
+  <script src="weapons/weapon.js"></script>
+  <script src="weapons/p5jsIconSkill.js"></script>
+  <script src="weapons/unibookSkill.js"></script>
+  <script src="weapons/usbSkill.js"></script>
+  <script src="weapons/professorCancelSkill.js"></script>
+  <script src="weapons/wifiSkill.js"></script>
+  <script src="weapons/mouseSkill.js"></script>
+  <script src="weapons/crammingSkill.js"></script>
+  <script src="weapons/seniorSummonSkill.js"></script>
+  <script src="weapons/laptopSkill.js"></script>
+
+  <!-- Data (WEAPONS_INFO는 모든 클래스 로드 후) -->
+  <script src="data/weaponsInfo.js"></script>
+
+  <!-- UI -->
+  <script src="ui/hud.js"></script>
+  <script src="ui/lobby.js"></script>
+  <script src="ui/levelUpScreen.js"></script>
+  <script src="ui/gameOver.js"></script>
+
+  <!-- Main -->
+  <script src="sketch.js"></script>
+</head>
+
+<body>
+  <main></main>
+</body>
+
+</html>
