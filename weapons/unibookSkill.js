@@ -1,4 +1,5 @@
 class UnibookSkill extends Weapon {
+  //레벨별 수치 조정
   static LEVEL_DATA = [
     { dmg: 10, cd: 180, dur: 120, proj: 1, spd: 0.05, area: 1.0, desc: "플레이어 주변을 맴도는 책 생성" },
     { dmg: 10, cd: 180, dur: 150, proj: 2, spd: 0.07, area: 1.0, desc: "책 1개 추가, 속도 및 지속시간 증가" },
@@ -19,11 +20,31 @@ class UnibookSkill extends Weapon {
 
   update(stats) {
     let s = this.currentStats;
-    // 쿨다운 로직 제거 - 성경(Bible)처럼 항시 회전
-    this.angle += s.spd * 2.0; // 속도를 조금 더 빠르게 조절
+    let cdRate = max(30, s.cd * stats.cooldown);
+    let durRate = s.dur * stats.duration;
+
+    if (this.isEvolved) {
+      this.activeTimer = 999999;
+      this.cooldownTimer = 0;
+    }
+
+    if (this.activeTimer > 0) {
+      this.activeTimer--;
+      this.angle += s.spd * 2.0; // 회전 속도 조절
+      if (this.activeTimer <= 0) {
+        this.cooldownTimer = cdRate;
+      }
+    } else if (this.cooldownTimer > 0) {
+      this.cooldownTimer--;
+    } else {
+      // 쿨타임이 다 차면 다시 활성화
+      this.activeTimer = durRate;
+    }
   }
 
   display(stats) {
+    if (this.activeTimer <= 0) return;
+
     let s = this.currentStats;
     let radius = 100 * s.area * stats.area;
     let dmg = s.dmg * stats.attack;
@@ -38,9 +59,9 @@ class UnibookSkill extends Weapon {
       noStroke();
       // 외곽 글로우
       fill(255);
-      ellipse(sx, sy, 35, 35); // 52 -> 35
+      ellipse(sx, sy, 35, 35);
       fill(255);
-      ellipse(sx, sy, 25, 25); // 38 -> 25
+      ellipse(sx, sy, 25, 25);
 
       // 중심: unibook 아이콘 이미지 (없으면 기본 원)
       if (typeof gameImages !== 'undefined' && gameImages.unibook) {
@@ -48,7 +69,7 @@ class UnibookSkill extends Weapon {
         // 오브가 공전하면서 아이콘도 함께 회전
         translate(sx, sy);
         rotate(a + HALF_PI);  // 공전 방향과 맞게 회전
-        image(gameImages.unibook, 0, 0, 18, 18); // 30 -> 18
+        image(gameImages.unibook, 0, 0, 18, 18);
       } else {
         fill(255, 240, 120);
         ellipse(sx, sy, 15, 15);
@@ -58,17 +79,20 @@ class UnibookSkill extends Weapon {
       pop();
 
       // ── 히트 판정 & 이펙트 ──
-      if (frameCount % 10 === 0) {
-        for (let e of enemies) {
-          if (dist(sx, sy, e.x, e.y) < 20) { // 30 -> 20
+      for (let e of enemies) {
+        if (dist(sx, sy, e.x, e.y) < 20) {
+          if (!e.lastUnibookHitFrames) e.lastUnibookHitFrames = {};
+          let lastHit = e.lastUnibookHitFrames[i] || 0;
+          
+          // 각 책 번호(i)별로 동일한 적에 대해 20프레임(약 0.33초) 피격 쿨타임 부여
+          if (frameCount - lastHit > 20) {
             e.takeDamage(dmg, sx, sy, 3.0);
+            e.lastUnibookHitFrames[i] = frameCount;
             // 히트 시 빛 번짐 이펙트
             spawnEffect(new OrbHitEffect(sx, sy));
           }
         }
       }
-      
-      // 트레일 이펙트는 요청에 의해 제거됨
     }
   }
 }

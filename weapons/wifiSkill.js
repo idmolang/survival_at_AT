@@ -1,4 +1,5 @@
 class WifiSkill extends Weapon {
+  //레벨별 수치 조정
   static LEVEL_DATA = [
     { dmg: 2, area: 1.0, cd: 30, desc: "주변의 적에게 피해를 줍니다." },
     { dmg: 3, area: 1.2, cd: 30, desc: "크기 및 데미지 증가" },

@@ -1,4 +1,5 @@
 class ProfessorCancelSkill extends Weapon {
+  //레벨별 수치 조정
   static LEVEL_DATA = [
     { dmg: 9999, cd: 3600, desc: "화면 내 모든 적 처치 (쿨타임 60초)" },
     { dmg: 9999, cd: 3000, desc: "쿨타임 감소" },
@@ -11,7 +12,7 @@ class ProfessorCancelSkill extends Weapon {
   constructor(owner) {
     super(owner);
     this.name = "교수님의 휴강선언";
-    this.id = "Professor";
+    this.id = "교수님의 휴강선언";
   }
 
   update(stats) {

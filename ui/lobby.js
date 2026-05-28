@@ -7,18 +7,30 @@ function drawLobby() {
   rectMode(CENTER); textStyle(NORMAL);
 
   let btns = [
-    { label: "게임 시작", yOffset: 50 },
-    { label: "게임 방법", yOffset: 140 },
-    { label: "테스트 모드", yOffset: 230 }
+    { label: "게임 시작", yOffset: 20 },
+    { label: "게임 방법", yOffset: 100 },
+    { label: "테스트 모드", yOffset: 180 },
+    { label: "에셋 & 이펙트 뷰어", yOffset: 260 }
   ];
   for (let b of btns) {
-    let bx = width / 2; let by = height / 2 + b.yOffset; let bw = 250; let bh = 60;
+    let bx = width / 2; let by = height / 2 + b.yOffset; let bw = 280; let bh = 60; // 4th button is longer, so widened to 280
     let hover = mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2;
-    if (hover) { fill(80, 180, 255); cursor(HAND); } else { fill(50, 150, 255); }
-    if (b.label === "테스트 모드") { if (hover) fill(200, 50, 50); else fill(150, 40, 40); }
+    
+    if (hover) {
+      cursor(HAND);
+      if (b.label === "테스트 모드") fill(220, 60, 60);
+      else if (b.label === "에셋 & 이펙트 뷰어") fill(160, 80, 255);
+      else fill(80, 180, 255);
+    } else {
+      if (b.label === "테스트 모드") fill(150, 40, 40);
+      else if (b.label === "에셋 & 이펙트 뷰어") fill(100, 50, 200);
+      else fill(50, 150, 255);
+    }
+    
     rect(bx, by, bw, bh, 15);
-    fill(255); textSize(28); text(b.label, bx, by);
+    fill(255); textSize(26); text(b.label, bx, by);
   }
+
 }
 
 function drawHowToPlay() {

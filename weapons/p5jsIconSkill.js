@@ -1,4 +1,5 @@
 class P5jsIconSkill extends Weapon {
+  //레벨별 수치 조정
   static LEVEL_DATA = [
     { dmg: 10, cd: 60, proj: 1, pierce: 0, desc: "가장 가까운 적에게 발사합니다." },
     { dmg: 10, cd: 48, proj: 2, pierce: 0, desc: "발사체 1개 증가, 쿨타임 감소" },
@@ -11,7 +12,7 @@ class P5jsIconSkill extends Weapon {
   constructor(owner) {
     super(owner);
     this.name = "p5js";
-    this.id = "P5js";
+    this.id = "p5js";
   }
 
   update(stats) {

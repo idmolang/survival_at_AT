@@ -1,4 +1,5 @@
 class CrammingSkill extends Weapon {
+  //레벨별 수치 조정
   static LEVEL_DATA = [
     { dmg: 20, cd: 150, proj: 1, area: 1.0, desc: "무작위 적에게 벼락이 떨어집니다." },
     { dmg: 20, cd: 150, proj: 2, area: 1.2, desc: "벼락 1개 추가, 범위 증가" },

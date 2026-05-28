@@ -1,4 +1,5 @@
 class MouseSkill extends Weapon {
+  //레벨별 수치 조정
   static LEVEL_DATA = [
     { dmg: 10, cd: 120, dur: 300, proj: 1, spd: 8, desc: "적을 관통하고 화면 가장자리에서 튕깁니다." },
     { dmg: 10, cd: 120, dur: 400, proj: 1, spd: 10, desc: "속도 및 지속시간 증가" },
@@ -11,7 +12,7 @@ class MouseSkill extends Weapon {
   constructor(owner) {
     super(owner);
     this.name = "마우스";
-    this.id = "Mouse";
+    this.id = "마우스";
   }
 
   update(stats) {

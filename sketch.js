@@ -54,6 +54,7 @@ function draw() {
   else if (gameState === "GAME_OVER") { drawGame(); drawGameOver(); }
   else if (gameState === "GAME_CLEAR") { drawGame(); drawGameClear(); }
   else if (gameState === "TEST_SKILL_SELECT") drawTestSkillSelect();
+  else if (gameState === "ASSET_VIEWER") drawAssetViewer();
 }
 
 function drawGame() {
@@ -87,7 +88,7 @@ function drawGame() {
     let spawnRate = 60;
 
     if (m < 2) {
-      maxEnemies = 50 + m * 20; spawnRate = 60 - m * 10;
+      maxEnemies = 20; spawnRate = 120;
     } else if (m < 5) {
       maxEnemies = 100 + (m - 2) * 30; spawnRate = 40 - (m - 2) * 5;
     } else if (m < 7) {
@@ -155,19 +156,31 @@ function drawGrid() {
 
 function mousePressed() {
   if (gameState === "LOBBY") {
-    let bx = width / 2; let by = height / 2 + 50; let bw = 250; let bh = 60;
+    let bx = width / 2; let bw = 280; let bh = 60;
+    // 1. 게임 시작 (yOffset: 20)
+    let by = height / 2 + 20;
     if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
       initGame(); gameState = "IN_GAME";
     }
-    by = height / 2 + 140;
+    // 2. 게임 방법 (yOffset: 100)
+    by = height / 2 + 100;
     if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
       gameState = "HOW_TO_PLAY";
     }
-    by = height / 2 + 230;
+    // 3. 테스트 모드 (yOffset: 180)
+    by = height / 2 + 180;
     if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
       testSelectedWeapons = []; testSelectedPassives = []; isTestModeWeaponSelect = true;
       gameState = "TEST_SKILL_SELECT";
     }
+    // 4. 에셋 & 이펙트 뷰어 (yOffset: 260)
+    by = height / 2 + 260;
+    if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
+      gameState = "ASSET_VIEWER";
+      initAssetViewer();
+    }
+  } else if (gameState === "ASSET_VIEWER") {
+    assetViewerMousePressed();
   } else if (gameState === "HOW_TO_PLAY" || gameState === "GAME_OVER" || gameState === "GAME_CLEAR") {
     let bx = width / 2; let by = height - 150; let bw = 250; let bh = 60;
     if (gameState !== "HOW_TO_PLAY") by = height / 2 + 80;

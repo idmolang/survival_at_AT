@@ -1,4 +1,5 @@
 class LaptopSkill extends Weapon {
+  //레벨별 수치 조정
   static LEVEL_DATA = [
     { dmg: 40, cd: 240, proj: 1, area: 1.0, desc: "무작위 위치에 메테오가 떨어집니다." },
     { dmg: 60, cd: 240, proj: 2, area: 1.0, desc: "메테오 1개 추가, 데미지 증가" },
@@ -11,7 +12,7 @@ class LaptopSkill extends Weapon {
   constructor(owner) {
     super(owner);
     this.name = "노트북";
-    this.id = "Laptop";
+    this.id = "노트북";
   }
 
   update(stats) {

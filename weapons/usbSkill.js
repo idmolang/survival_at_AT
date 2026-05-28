@@ -1,4 +1,5 @@
 class UsbSkill extends Weapon {
+  //레벨별 수치 조정
   static LEVEL_DATA = [
     { dmg: 5, cd: 120, dur: 120, proj: 1, area: 1.0, desc: "무작위 위치에 데미지 장판 생성" },
     { dmg: 5, cd: 120, dur: 150, proj: 2, area: 1.2, desc: "병 1개 추가, 크기 및 지속시간 증가" },

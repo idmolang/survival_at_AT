@@ -88,7 +88,9 @@ function drawLevelUp() {
       fill(150, 200, 255); text(`필요 패시브: ${choice.info.passiveInfo}`, cx, cy + 130);
     } else {
       text(choice.isUpgrade ? `Level: ${choice.existing.level} -> ${choice.existing.level + 1}` : "새로운 패시브", cx, cy);
-      text("관련 능력치 상승", cx, cy + 50);
+      let descIdx = choice.isUpgrade ? choice.existing.level : 0;
+      let descText = (choice.info.desc && choice.info.desc[descIdx]) ? choice.info.desc[descIdx] : "관련 능력치 상승";
+      text(descText, cx, cy + 50, cardW - 20, 100);
     }
   }
   pop();

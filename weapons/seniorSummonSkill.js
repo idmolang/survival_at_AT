@@ -1,4 +1,5 @@
 class SeniorSummonSkill extends Weapon {
+  //레벨별 수치 조정
   static LEVEL_DATA = [
     { dmg: 40, cd: 180, proj: 1, area: 1.0, desc: "무작위 위치에 생성되어 일직선 레이저 발사" },
     { dmg: 60, cd: 180, proj: 1, area: 1.2, desc: "데미지 및 레이저 굵기 증가" },
@@ -11,7 +12,7 @@ class SeniorSummonSkill extends Weapon {
   constructor(owner) {
     super(owner);
     this.name = "선배들의 조언";
-    this.id = "Senior";
+    this.id = "선배들의 조언";
     this.blasters = [];
   }
 
