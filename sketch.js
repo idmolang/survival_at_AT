@@ -212,7 +212,7 @@ function mousePressed() {
         for (let pInfo of testSelectedPassives) {
           let p = new Passive(pInfo.name, pInfo.id); p.level = 5; player.addPassive(p);
         }
-        gameFrames = 36000;
+        gameFrames = 46800;
         gameState = "IN_GAME";
       }
     }
