@@ -5,7 +5,7 @@ class ProfessorCancelSkill extends Weapon {
     { dmg: 9999, cd: 3000, desc: "쿨타임 감소" },
     { dmg: 9999, cd: 2400, desc: "쿨타임 감소" },
     { dmg: 9999, cd: 1800, desc: "쿨타임 감소" },
-    { dmg: 9999, cd: 200, desc: "쿨타임 대폭 감소" }
+    { dmg: 9999, cd: 1200, desc: "쿨타임 대폭 감소" }
   ];
   static EVO_DATA = { dmg: 99999, cd: 900, desc: "전체 적 처치 및 막대한 보너스 경험치 획득" };
 
@@ -25,7 +25,7 @@ class ProfessorCancelSkill extends Weapon {
       spawnEffect(new ScreenFlashEffect([255, 255, 255], 30));
       // ── 교수님 등장 페이드 연출 ──
       spawnEffect(new ProfessorAppearEffect());
-      
+
       for (let g of gems) {
         g.isDead = true; // 삭제 처리 (풀 시스템으로 반환됨)
       }
@@ -42,5 +42,5 @@ class ProfessorCancelSkill extends Weapon {
     }
   }
 
-  display() {}
+  display() { }
 }
