@@ -51,12 +51,12 @@ function drawLevelUp() {
   rectMode(CORNER);
   rect(0, 0, width, height);
 
-  let cardW   = 300;  // 기존 262 -> 300 (더 크게)
-  let cardH   = 460;  // 기존 400 -> 460 (더 크게)
+  let cardW = 300;  // 기존 262 -> 300 (더 크게)
+  let cardH = 460;  // 기존 400 -> 460 (더 크게)
   let spacing = 32;
-  let totalW  = skillChoices.length * cardW + (skillChoices.length - 1) * spacing;
-  let startX  = width / 2 - totalW / 2 + cardW / 2;
-  let cy      = height / 2 + 35;
+  let totalW = skillChoices.length * cardW + (skillChoices.length - 1) * spacing;
+  let startX = width / 2 - totalW / 2 + cardW / 2;
+  let cy = height / 2 + 35;
 
   // ── 타이틀 ──
   // 카드 상단에서 고정된 오프셋으로 설정하여 절대 겹치지 않게 변경
@@ -73,13 +73,13 @@ function drawLevelUp() {
   rectMode(CENTER);
 
   for (let i = 0; i < skillChoices.length; i++) {
-    let choice  = skillChoices[i];
-    let cx      = startX + i * (cardW + spacing);
+    let choice = skillChoices[i];
+    let cx = startX + i * (cardW + spacing);
     let isHover = mouseX > cx - cardW / 2 && mouseX < cx + cardW / 2 &&
-                  mouseY > cy - cardH / 2 && mouseY < cy + cardH / 2;
+      mouseY > cy - cardH / 2 && mouseY < cy + cardH / 2;
     let isWeapon = choice.type === 'weapon';
-    let isEvo    = choice.isEvo;
-    let topY     = cy - cardH / 2;
+    let isEvo = choice.isEvo;
+    let topY = cy - cardH / 2;
 
     // 카드 테마 색상
     let borderR, borderG, borderB;
@@ -87,17 +87,17 @@ function drawLevelUp() {
     let bgBotR, bgBotG, bgBotB;
 
     if (isEvo) {
-      [borderR, borderG, borderB] = [255, 80,  80 ];
-      [bgTopR,  bgTopG,  bgTopB ] = [50,  12,  12 ];
-      [bgBotR,  bgBotG,  bgBotB ] = [70,  22,  22 ];
+      [borderR, borderG, borderB] = [255, 80, 80];
+      [bgTopR, bgTopG, bgTopB] = [50, 12, 12];
+      [bgBotR, bgBotG, bgBotB] = [70, 22, 22];
     } else if (isWeapon) {
-      [borderR, borderG, borderB] = [255, 200, 50 ];
-      [bgTopR,  bgTopG,  bgTopB ] = [14,  28,  56 ];
-      [bgBotR,  bgBotG,  bgBotB ] = [22,  44,  88 ];
+      [borderR, borderG, borderB] = [255, 200, 50];
+      [bgTopR, bgTopG, bgTopB] = [14, 28, 56];
+      [bgBotR, bgBotG, bgBotB] = [22, 44, 88];
     } else {
       [borderR, borderG, borderB] = [140, 170, 255];
-      [bgTopR,  bgTopG,  bgTopB ] = [22,  22,  58 ];
-      [bgBotR,  bgBotG,  bgBotB ] = [30,  30,  78 ];
+      [bgTopR, bgTopG, bgTopB] = [22, 22, 58];
+      [bgBotR, bgBotG, bgBotB] = [30, 30, 78];
     }
 
     // 호버 시 배경 하이라이트
@@ -114,8 +114,8 @@ function drawLevelUp() {
     // push/pop으로 감싸서 글자 렌더링 영역까지 그림자 잔상이 겹쳐 가독성을 떨어뜨리는 현상 방지
     push();
     if (isHover) {
-      drawingContext.shadowColor   = `rgba(${borderR},${borderG},${borderB},0.55)`;
-      drawingContext.shadowBlur    = 30;
+      drawingContext.shadowColor = `rgba(${borderR},${borderG},${borderB},0.55)`;
+      drawingContext.shadowBlur = 30;
       drawingContext.shadowOffsetX = 0;
       drawingContext.shadowOffsetY = 6;
     }
@@ -141,7 +141,7 @@ function drawLevelUp() {
     stroke(borderR, borderG, borderB, 200);
     strokeWeight(2);
     line(cx - cardW / 2 + 24, topY + 1,
-         cx + cardW / 2 - 24, topY + 1);
+      cx + cardW / 2 - 24, topY + 1);
 
     // ── 스킬 아이콘 단독 출력 ──
     let iconCY = topY + 75;
@@ -163,7 +163,7 @@ function drawLevelUp() {
       noStroke();
       fill(borderR, borderG, borderB, 35);
       ellipse(cx, iconCY, 72, 72);
-      
+
       fill(borderR, borderG, borderB);
       textSize(32);
       textStyle(BOLD);
@@ -173,12 +173,12 @@ function drawLevelUp() {
     pop();
 
     // ── 배지 (신규/레벨업/진화) ──
-    let badgeText = isEvo         ? "★ 궁극기 진화"  :
-                    choice.isUpgrade ? "▲ 레벨 업"    :
-                                       "✦ 신규 획득";
+    let badgeText = isEvo ? "★ 궁극기 진화" :
+      choice.isUpgrade ? "▲ 레벨 업" :
+        "✦ 신규 획득";
     let badgeR = isEvo ? 255 : choice.isUpgrade ? 100 : 255;
-    let badgeG = isEvo ?  90 : choice.isUpgrade ? 255 : 225;
-    let badgeB = isEvo ?  90 : choice.isUpgrade ? 130 :  80;
+    let badgeG = isEvo ? 90 : choice.isUpgrade ? 255 : 225;
+    let badgeB = isEvo ? 90 : choice.isUpgrade ? 130 : 80;
 
     noStroke();
     fill(badgeR, badgeG, badgeB, 30);
@@ -199,7 +199,7 @@ function drawLevelUp() {
     stroke(255, 255, 255, 35);
     strokeWeight(1);
     line(cx - cardW / 2 + 18, topY + 200,
-         cx + cardW / 2 - 18, topY + 200);
+      cx + cardW / 2 - 18, topY + 200);
 
     // ── 설명 텍스트 ──
     noStroke();
@@ -210,10 +210,10 @@ function drawLevelUp() {
     let descY = topY + 215;
 
     if (isWeapon) {
-      let desc = isEvo          ? choice.info.class.EVO_DATA.desc
-               : choice.isUpgrade ? choice.info.class.LEVEL_DATA[choice.existing.level].desc
-               :                    choice.info.class.LEVEL_DATA[0].desc;
-      
+      let desc = isEvo ? choice.info.class.EVO_DATA.desc
+        : choice.isUpgrade ? choice.info.class.LEVEL_DATA[choice.existing.level].desc
+          : choice.info.class.LEVEL_DATA[0].desc;
+
       push();
       rectMode(CORNER);
       textAlign(CENTER, TOP);
@@ -222,9 +222,9 @@ function drawLevelUp() {
       pop();
 
       // ── 스탯 박스 ──
-      let statsData = isEvo          ? choice.info.class.EVO_DATA
-                    : choice.isUpgrade ? choice.info.class.LEVEL_DATA[choice.existing.level]
-                    :                    choice.info.class.LEVEL_DATA[0];
+      let statsData = isEvo ? choice.info.class.EVO_DATA
+        : choice.isUpgrade ? choice.info.class.LEVEL_DATA[choice.existing.level]
+          : choice.info.class.LEVEL_DATA[0];
       let statsY = topY + 285;
 
       noStroke();
@@ -238,9 +238,9 @@ function drawLevelUp() {
 
       // 스탯 행
       let rows = [
-        { label: "피해량",  val: statsData.dmg  != null ? `${statsData.dmg}`  : "-" },
-        { label: "쿨타임",  val: statsData.cd   != null ? `${(statsData.cd / 60).toFixed(1)}s` : "-" },
-        { label: "범위",    val: statsData.area != null ? `×${statsData.area.toFixed(1)}`   : "-" },
+        { label: "피해량", val: statsData.dmg != null ? `${statsData.dmg}` : "-" },
+        { label: "쿨타임", val: statsData.cd != null ? `${(statsData.cd / 60).toFixed(1)}s` : "-" },
+        { label: "범위", val: statsData.area != null ? `×${statsData.area.toFixed(1)}` : "-" },
       ];
       for (let ri = 0; ri < rows.length; ri++) {
         let ry = statsY + ri * 24 + 16;
@@ -268,10 +268,10 @@ function drawLevelUp() {
 
     } else {
       // ── 패시브 카드 설명 ──
-      let descIdx  = choice.isUpgrade ? choice.existing.level : 0;
+      let descIdx = choice.isUpgrade ? choice.existing.level : 0;
       let descText = (choice.info.desc && choice.info.desc[descIdx])
-                   ? choice.info.desc[descIdx] : "관련 능력치 상승";
-      
+        ? choice.info.desc[descIdx] : "관련 능력치 상승";
+
       push();
       rectMode(CORNER);
       textAlign(CENTER, TOP);

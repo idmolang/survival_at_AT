@@ -7,7 +7,7 @@ class Gem {
     this.collected = false;
     this.isMoving = false;
   }
-  reset() {}
+  reset() { }
   update(player) {
     if (!this.isMoving) {
       let maxRange = player.stats.magnet || 150;
@@ -15,7 +15,7 @@ class Gem {
         return; // 자석 범위 밖에 있는 젬은 계산조차 스킵!
       }
     }
-    
+
     let d = dist(this.x, this.y, player.x, player.y);
     if (d < player.stats.magnet) this.isMoving = true;
     if (this.isMoving) {

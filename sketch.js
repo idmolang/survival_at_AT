@@ -289,16 +289,16 @@ function mousePressed() {
     }
   } else if (gameState === "LEVEL_UP") {
     // drawLevelUp()과 동일한 공식으로 카드 위치 계산
-    let cardW   = 300;
-    let cardH   = 460;
+    let cardW = 300;
+    let cardH = 460;
     let spacing = 32;
-    let totalW  = skillChoices.length * cardW + (skillChoices.length - 1) * spacing;
-    let startX  = width / 2 - totalW / 2 + cardW / 2;
-    let cy      = height / 2 + 35;
+    let totalW = skillChoices.length * cardW + (skillChoices.length - 1) * spacing;
+    let startX = width / 2 - totalW / 2 + cardW / 2;
+    let cy = height / 2 + 35;
     for (let i = 0; i < skillChoices.length; i++) {
       let cx = startX + i * (cardW + spacing);
       if (mouseX > cx - cardW / 2 && mouseX < cx + cardW / 2 &&
-          mouseY > cy - cardH / 2 && mouseY < cy + cardH / 2) {
+        mouseY > cy - cardH / 2 && mouseY < cy + cardH / 2) {
         let choice = skillChoices[i];
         if (choice.isUpgrade) choice.existing.levelUp();
         else {

@@ -43,7 +43,7 @@ class P5jsIconSkill extends Weapon {
     }
   }
 
-  display() {}
+  display() { }
 
   getClosest() {
     let closest = null;

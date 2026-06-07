@@ -303,7 +303,7 @@ class Boss extends Enemy {
       stroke(255, 195, 0, 160 + sin(frameCount * 0.4) * 60);
       strokeWeight(50);
       line(0, 0, cos(this.laserTargetAngle) * 1200, sin(this.laserTargetAngle) * 1200);
-      
+
       // 광선 핵심 코어 (코어 두께 12 -> 18로 확대)
       stroke(255, 255, 255, 240);
       strokeWeight(18);
@@ -326,13 +326,13 @@ class Boss extends Enemy {
         stroke(255, 0, 0, 240);
         strokeWeight(3.5);
         ellipse(w.x, w.y, w.r * 2, w.r * 2);
-      } 
+      }
       else if (w.type === "line") {
         // 레이저 조준선 경고 (두께 3->5.5, 불투명도 증가)
         stroke(255, 0, 0, 210 + sin(frameCount * 0.3) * 45);
         strokeWeight(5.5);
         line(w.x1, w.y1, w.x2, w.y2);
-      } 
+      }
       else if (w.type === "rect") {
         // 돌진 직사각형 트랙 경고 (선 두께 2->3.5, 알파 45->90으로 증가)
         push();
@@ -366,7 +366,7 @@ class BossProjectile {
     this.size = size;
     this.isDead = false;
     this.duration = 240;
-    
+
     if (this.type === "F") {
       this.vx = targetX; // F학점은 생성자에 vx, vy 속도를 넘겨받음
       this.vy = targetY;
@@ -379,23 +379,23 @@ class BossProjectile {
       this.y += this.vy;
       this.duration--;
       if (this.duration <= 0) this.isDead = true;
-    } 
+    }
     else if (this.type === "ASSIGNMENT") {
       // 과제지는 하늘 위에서 Target Y 좌표로 중력 가속 낙하
       this.y += 8;
       // 완만한 X축 추적 조정
       this.x = lerp(this.x, this.targetX, 0.05);
-      
+
       // 타겟 고도 도달 시 폭발
       if (this.y >= this.targetY) {
         this.isDead = true;
-        
+
         // 지면 도달 충격파 연출 (충격파 폭발 범위 확장)
         spawnEffect(new ShockwaveEffect(this.targetX, this.targetY, [255, 80, 50], 65));
         for (let i = 0; i < 5; i++) {
           spawnEffect(new SparkEffect(this.targetX, this.targetY, [255, 140, 60]));
         }
-        
+
         // 폭발 데미지 체크
         if (dist(player.x, player.y, this.targetX, this.targetY) < 65) {
           player.takeDamage(this.dmg);
@@ -407,7 +407,7 @@ class BossProjectile {
   display() {
     push();
     translate(this.x, this.y);
-    
+
     if (this.type === "F") {
       // 붉고 사악한 학점 경고 글씨 (크기 22->30으로 확대 및 가시용 검정 테두리 장착)
       textAlign(CENTER, CENTER);
@@ -417,7 +417,7 @@ class BossProjectile {
       strokeWeight(3.5);
       fill(255, 0, 0);
       text("F", 0, 0);
-    } 
+    }
     else if (this.type === "ASSIGNMENT") {
       // 회전하는 과제지 연출 (크기 18x24 -> 24x32로 확대)
       rotate(frameCount * 0.07);
@@ -426,7 +426,7 @@ class BossProjectile {
       stroke(220, 0, 0);
       strokeWeight(2);
       rect(0, 0, 24, 32, 2);
-      
+
       // 빨간색 교수님 과제 피드백 선낙서
       stroke(255, 0, 0);
       strokeWeight(1.5);
@@ -434,7 +434,7 @@ class BossProjectile {
       line(-8, -1, 6, -1);
       line(-8, 6, 2, 6);
     }
-    
+
     pop();
   }
 

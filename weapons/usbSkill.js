@@ -49,11 +49,11 @@ class UsbSkill extends Weapon {
           files: files,
           connectAnim: 0
         });
-        
+
         while (this.zones.length > 6) {
           this.zones.shift();
         }
-        
+
         // 장판 생성 시 넓게 퍼지는 파란 충격파
         spawnEffect(new ShockwaveEffect(zx, zy, [80, 180, 255], rad));
       }
@@ -61,7 +61,7 @@ class UsbSkill extends Weapon {
     for (let i = this.zones.length - 1; i >= 0; i--) {
       let z = this.zones[i];
       z.dur--;
-      
+
       // 꽂힘 애니메이션 진행
       if (z.connectAnim < 15) {
         z.connectAnim++;
@@ -74,14 +74,14 @@ class UsbSkill extends Weapon {
           }
         }
       }
-      
+
       // 파일 공전 각도 갱신
       if (z.files) {
         for (let f of z.files) {
           f.angle += f.speed;
         }
       }
-      
+
       if (this.isEvolved) {
         let a = atan2(this.owner.y - z.y, this.owner.x - z.x);
         z.x += cos(a) * 1.5;
@@ -98,7 +98,7 @@ class UsbSkill extends Weapon {
 
     for (let z of this.zones) {
       let lifeRatio = z.dur / z.maxDur;
-      
+
       // 꽂히는 동안 공전 파일 궤도가 중심부에서 밖으로 확장됨 (0.1 ~ 1.0)
       let expandRatio = z.connectAnim < 15 ? lerp(0.1, 1.0, z.connectAnim / 15.0) : 1.0;
 
@@ -148,7 +148,7 @@ class UsbSkill extends Weapon {
       push();
       translate(z.x, z.y + insertY);
       rotate(insertAngle);
-      
+
       if (gameImages.usb) {
         imageMode(CENTER);
         let pulse = sin(frameCount * 0.08) * 2.0;
@@ -220,10 +220,10 @@ class UsbSkill extends Weapon {
         for (let e of enemies) {
           if (dist(z.x, z.y, e.x, e.y) < rad) {
             e.takeDamage(dmg, z.x, z.y, 0);
-            
+
             // 전자기 사이언 스파크
             spawnEffect(new SparkEffect(e.x, e.y, [80, 200, 255]));
-            
+
             // 데이터 링크 스트림 광선 스폰 (USB 소켓 코어와 적 연결)
             spawnEffect(new DataLinkEffect(z.x, z.y, e.x, e.y));
           }

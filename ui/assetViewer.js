@@ -165,7 +165,7 @@ function drawSidebar() {
   fill(25, 25, 45, 240);
   noStroke();
   rect(0, 0, 250, height);
-  
+
   // 사이드바 우측 테두리 발광 라인
   stroke(60, 60, 95);
   strokeWeight(2);
@@ -191,7 +191,7 @@ function drawSidebar() {
   else fill(30, 30, 50);
   rectMode(CORNER);
   rect(15, 85, 220, 45, 8);
-  
+
   fill(255); textStyle(BOLD); textSize(15);
   text("이펙트 쇼케이스", 125, 1075 / 10);
 
@@ -201,7 +201,7 @@ function drawSidebar() {
   else if (t2Hover) { fill(45, 45, 75); cursor(HAND); }
   else fill(30, 30, 50);
   rect(15, 140, 220, 45, 8);
-  
+
   fill(255); textStyle(BOLD); textSize(15);
   text("에셋 브라우저", 125, 162.5);
 
@@ -223,7 +223,7 @@ function drawSidebar() {
   let exitY = height - 50;
   let exitW = 200;
   let exitH = 50;
-  let exitHover = mouseX > exitX - exitW/2 && mouseX < exitX + exitW/2 && mouseY > exitY - exitH/2 && mouseY < exitY + exitH/2;
+  let exitHover = mouseX > exitX - exitW / 2 && mouseX < exitX + exitW / 2 && mouseY > exitY - exitH / 2 && mouseY < exitY + exitH / 2;
   if (exitHover) { fill(220, 70, 70); cursor(HAND); }
   else fill(180, 50, 50);
   rectMode(CENTER);
@@ -245,7 +245,7 @@ function drawSidebarEffectsList() {
 
   let startY = 240;
   let itemH = 40;
-  
+
   for (let i = 0; i < VIEWER_EFFECTS.length; i++) {
     let cy = startY + i * (itemH + 5);
     // 화면 높이를 초과하지 않도록 constrain
@@ -302,20 +302,20 @@ function drawSidebarAssetsTip() {
 // 탭 1: 이펙트 쇼케이스 레이아웃 및 렌더링
 function drawEffectsShowcase() {
   push();
-  
+
   // 프리뷰 캔버스 영역 정의 (사이드바 오른쪽의 대부분 영역)
   let canvasX = 260;
   let canvasY = 20;
   let canvasW = width - 280;
   let canvasH = height - 180; // 하부 이펙트 설명 패널을 위한 공간 확보
-  
+
   // 1. 프리뷰 캔버스 테두리 및 어두운 격자판(checkered) 배경
   rectMode(CORNER);
   fill(10, 10, 15);
   stroke(60, 60, 95);
   strokeWeight(2);
   rect(canvasX, canvasY, canvasW, canvasH, 15);
-  
+
   // 클리핑 격자 배경
   push();
   noStroke();
@@ -337,7 +337,7 @@ function drawEffectsShowcase() {
   fill(120, 120, 150);
   textSize(14);
   textAlign(CENTER, CENTER);
-  text("화면 격자 내부를 마우스 클릭하여 이펙트를 직접 생성해보세요!", canvasX + canvasW/2, canvasY + 30);
+  text("화면 격자 내부를 마우스 클릭하여 이펙트를 직접 생성해보세요!", canvasX + canvasW / 2, canvasY + 30);
 
   // 3. 이펙트 업데이트 & 렌더링 (그려지는 이펙트들이 프리뷰 격자 안에 갇혀 정렬되게 함)
   push();
@@ -366,7 +366,7 @@ function drawEffectsShowcase() {
   noStroke();
 
   let fx = VIEWER_EFFECTS[selectedEffectIndex];
-  
+
   // 이펙트 명칭 타이틀
   textAlign(LEFT, TOP);
   textSize(22);
@@ -384,8 +384,8 @@ function drawEffectsShowcase() {
   rect(canvasX + canvasW - skillTagW - 25, infoY + 20, skillTagW, 28, 6);
   fill(255, 180, 100);
   textAlign(CENTER, CENTER);
-  text(fx.skill, canvasX + canvasW - skillTagW/2 - 25, infoY + 33);
-  
+  text(fx.skill, canvasX + canvasW - skillTagW / 2 - 25, infoY + 33);
+
   // 설명 문구
   textAlign(LEFT, TOP);
   textSize(14);
@@ -408,7 +408,7 @@ function drawEffectsShowcase() {
   rectMode(CORNER);
   rect(btnX, btnY, btnW, btnH, 5);
   fill(255); textStyle(BOLD); textSize(11); textAlign(CENTER, CENTER);
-  text(autoPlayEffects ? "자동재생 정지" : "자동재생 루프", btnX + btnW/2, btnY + btnH/2);
+  text(autoPlayEffects ? "자동재생 정지" : "자동재생 루프", btnX + btnW / 2, btnY + btnH / 2);
 
   pop();
 }
@@ -416,45 +416,45 @@ function drawEffectsShowcase() {
 // 탭 2: 에셋 브라우저 그리드 배치 렌더링
 function drawAssetsGrid() {
   push();
-  
+
   let gridX = 270;
   let gridY = 40;
   let gridW = width - 290;
-  
+
   // 1. 헤더 타이틀 및 에셋 수 안내
   textAlign(LEFT, TOP);
   textSize(24);
   textStyle(BOLD);
   fill(255);
   text("에셋 브라우저 (Asset Browser)", gridX, gridY);
-  
+
   let keys = Object.keys(gameImages);
   textSize(13);
   textStyle(NORMAL);
   fill(160, 160, 190);
   text(`gameImages에서 총 ${keys.length}개의 최상위 에셋 키가 실시간으로 로드되었습니다.`, gridX, gridY + 30);
-  
+
   // 2. 동적 격자 카드 렌더링
   let cardW = 180;
   let cardH = 210;
   let gap = 20;
   let startY = gridY + 65;
-  
+
   // 화면 가로 너비에 맞는 열 개수 산출
   let cols = max(1, floor(gridW / (cardW + gap)));
-  
+
   for (let i = 0; i < keys.length; i++) {
     let key = keys[i];
     let col = i % cols;
     let row = floor(i / cols);
     let cx = gridX + col * (cardW + gap);
     let cy = startY + row * (cardH + gap);
-    
+
     // 화면 세로 길이를 벗어난 에셋은 화면에 렌더링 생략
     if (cy + cardH > height - 20) continue;
 
     let hover = mouseX > cx && mouseX < cx + cardW && mouseY > cy && mouseY < cy + cardH;
-    
+
     // 카드 외형 디자인
     rectMode(CORNER);
     if (hover) {
@@ -474,18 +474,18 @@ function drawAssetsGrid() {
     let previewSize = 80;
     let px = cx + cardW / 2;
     let py = cy + 60;
-    
+
     push();
     translate(px, py);
     let cSize = 8;
-    for (let x = -previewSize/2; x < previewSize/2; x += cSize) {
-      for (let y = -previewSize/2; y < previewSize/2; y += cSize) {
-        if ((floor((x + previewSize/2) / cSize) + floor((y + previewSize/2) / cSize)) % 2 === 0) fill(20, 20, 30);
+    for (let x = -previewSize / 2; x < previewSize / 2; x += cSize) {
+      for (let y = -previewSize / 2; y < previewSize / 2; y += cSize) {
+        if ((floor((x + previewSize / 2) / cSize) + floor((y + previewSize / 2) / cSize)) % 2 === 0) fill(20, 20, 30);
         else fill(30, 30, 45);
         rect(x, y, cSize, cSize);
       }
     }
-    
+
     // 4. 에셋 실제 내용 렌더링 (단일 이미지 vs 프레임 배열 감지)
     let val = gameImages[key];
     if (val instanceof p5.Image) {
@@ -512,34 +512,34 @@ function drawAssetsGrid() {
     textStyle(BOLD);
     textSize(14);
     fill(255);
-    text(key, cx + cardW/2, cy + 120);
+    text(key, cx + cardW / 2, cy + 120);
 
     textSize(11);
     textStyle(NORMAL);
-    
+
     if (val instanceof p5.Image) {
       fill(150, 180, 255);
-      text("단일 이미지 에셋", cx + cardW/2, cy + 145);
+      text("단일 이미지 에셋", cx + cardW / 2, cy + 145);
       fill(160, 160, 180);
-      text(`해상도: ${val.width} x ${val.height}px`, cx + cardW/2, cy + 165);
+      text(`해상도: ${val.width} x ${val.height}px`, cx + cardW / 2, cy + 165);
     } else if (Array.isArray(val)) {
       fill(180, 140, 255);
-      text(`루프 애니메이션 에셋`, cx + cardW/2, cy + 145);
+      text(`루프 애니메이션 에셋`, cx + cardW / 2, cy + 145);
       fill(160, 160, 180);
-      text(`총 ${val.length}개 이미지 프레임`, cx + cardW/2, cy + 165);
+      text(`총 ${val.length}개 이미지 프레임`, cx + cardW / 2, cy + 165);
     } else {
       fill(255, 100, 100);
-      text("미확인 에셋 포맷", cx + cardW/2, cy + 145);
+      text("미확인 에셋 포맷", cx + cardW / 2, cy + 145);
     }
   }
-  
+
   pop();
 }
 
 // 탭 2-2: 에셋 상세조회 오버레이 모달 그리기
 function drawAssetDetailModal() {
   push();
-  
+
   // 전체 배경 디밍
   rectMode(CORNER);
   fill(5, 5, 10, 210);
@@ -592,7 +592,7 @@ function drawAssetDetailModal() {
   let pY = my + 90;
   let pW = leftW;
   let pH = mH - 120;
-  
+
   fill(12, 12, 22);
   stroke(55, 55, 80);
   strokeWeight(1.5);
@@ -615,9 +615,9 @@ function drawAssetDetailModal() {
 
   // 대형 렌더링 드로잉
   push();
-  translate(pX + pW/2, pY + pH/2);
+  translate(pX + pW / 2, pY + pH / 2);
   imageMode(CENTER);
-  
+
   if (val instanceof p5.Image) {
     let dw = val.width * assetZoomScale;
     let dh = val.height * assetZoomScale;
@@ -637,7 +637,7 @@ function drawAssetDetailModal() {
     } else {
       activeFrame = activeLaptopFrame;
     }
-    
+
     let img = val[activeFrame];
     let dw = img.width * assetZoomScale;
     let dh = img.height * assetZoomScale;
@@ -660,14 +660,14 @@ function drawAssetDetailModal() {
   textSize(13);
   textStyle(NORMAL);
   fill(160, 160, 185);
-  
+
   let infoText = "";
   if (val instanceof p5.Image) {
-    infoText = `유형: 싱글 정적 스프라이트 에셋\n해상도: ${val.width} x ${val.height} 픽셀 (px)\n비율: ${nfc(val.width/val.height, 2)}:1 가로세로비\n상태: 정상 로드 완료 (Active)\n\n메모리 주소: cache/images/${selectedAssetKey}.png\n\n이 에셋은 p5jsIcon 등 독립적인 발사체 혹은 플레이어 이동 애니메이션 스프라이트 한 프레임으로 활용됩니다.`;
+    infoText = `유형: 싱글 정적 스프라이트 에셋\n해상도: ${val.width} x ${val.height} 픽셀 (px)\n비율: ${nfc(val.width / val.height, 2)}:1 가로세로비\n상태: 정상 로드 완료 (Active)\n\n메모리 주소: cache/images/${selectedAssetKey}.png\n\n이 에셋은 p5jsIcon 등 독립적인 발사체 혹은 플레이어 이동 애니메이션 스프라이트 한 프레임으로 활용됩니다.`;
   } else if (Array.isArray(val)) {
     infoText = `유형: 멀티 프레임 시퀀스 애니메이션 에셋\n해상도: ${val[0].width} x ${val[0].height} 픽셀 (px)\n프레임 수: 총 ${val.length}개 시퀀스 프레임 구성\n상태: 다이내믹 루프 가동 가능\n\n메모리 주소: cache/sequences/${selectedAssetKey}/*\n\n이 에셋은 노트북 폭발 연출처럼 프레임 시트가 나누어진 순차 드로잉 애니메이션 오브젝트입니다.`;
   }
-  
+
   textLeading(22);
   text(infoText, rX, rY + 35, rightW, 200);
 
@@ -675,7 +675,7 @@ function drawAssetDetailModal() {
   let barY = rY + 230;
   fill(255); textStyle(BOLD); textSize(14);
   text("스프라이트 줌(Zoom) 확대 비율", rX, barY);
-  
+
   // 슬라이더 바
   stroke(60, 60, 95); strokeWeight(3);
   line(rX, barY + 25, rX + rightW - 50, barY + 25);
@@ -685,12 +685,12 @@ function drawAssetDetailModal() {
   let sliderMinX = rX;
   let sliderMaxX = rX + rightW - 50;
   let sliderKnobX = map(assetZoomScale, 0.5, 6.0, sliderMinX, sliderMaxX);
-  
+
   let knobHover = dist(mouseX, mouseY, sliderKnobX, barY + 25) < 10;
   if (knobHover) { fill(120, 100, 255); cursor(HAND); }
   else fill(100, 70, 220);
   ellipse(sliderKnobX, barY + 25, 16, 16);
-  
+
   fill(160, 160, 200); textSize(12); textStyle(NORMAL);
   text(`${nfc(assetZoomScale, 1)}x 배율`, rX + rightW - 40, barY + 28);
 
@@ -704,29 +704,29 @@ function drawAssetDetailModal() {
     let ctrlY = barY + 60;
     fill(255); textStyle(BOLD); textSize(14);
     text("애니메이션 프레임 시트 (Frame Sheet)", rX, ctrlY);
-    
+
     // 재생/일시정지 토글 버튼
     let playBtnX = rX + rightW - 80;
     let playBtnY = ctrlY - 4;
     let playBtnW = 80;
     let playBtnH = 24;
     let playBtnHover = mouseX > playBtnX && mouseX < playBtnX + playBtnW && mouseY > playBtnY && mouseY < playBtnY + playBtnH;
-    
+
     if (playBtnHover) { fill(100, 100, 140); cursor(HAND); } else fill(60, 60, 85);
     rectMode(CORNER);
     rect(playBtnX, playBtnY, playBtnW, playBtnH, 5);
     fill(255); textStyle(BOLD); textSize(11); textAlign(CENTER, CENTER);
-    text(isLaptopPlaying ? "일시 정지" : "시퀀스 재생", playBtnX + playBtnW/2, playBtnY + playBtnH/2);
-    
+    text(isLaptopPlaying ? "일시 정지" : "시퀀스 재생", playBtnX + playBtnW / 2, playBtnY + playBtnH / 2);
+
     // 프레임 전체 썸네일 그리드 출력 (상세 프레임 시트 가시화)
     let frameCols = 6;
     let fGridX = rX;
     let fGridY = ctrlY + 30;
     let fSize = 45;
     let fGap = 8;
-    
+
     hoveredDetailFrame = -1; // 매 프레임 마다 리셋
-    
+
     for (let f = 0; f < val.length; f++) {
       let col = f % frameCols;
       let row = floor(f / frameCols);
@@ -738,12 +738,12 @@ function drawAssetDetailModal() {
       if (hoveredDetailFrame === -1 && isFrameHover) {
         hoveredDetailFrame = f;
       }
-      
+
       let activeFrameIndex = 0;
       if (hoveredDetailFrame !== -1) activeFrameIndex = hoveredDetailFrame;
       else if (isLaptopPlaying) activeFrameIndex = floor(frameCount / laptopAnimSpeed) % val.length;
       else activeFrameIndex = activeLaptopFrame;
-      
+
       isCurrentFrame = (f === activeFrameIndex);
 
       rectMode(CORNER);
@@ -761,30 +761,30 @@ function drawAssetDetailModal() {
         stroke(50, 50, 75);
         strokeWeight(1.5);
       }
-      
+
       rect(fx, fy, fSize, fSize, 6);
       noStroke();
 
       // 프레임 투명 그리드 배경
       push();
-      translate(fx + fSize/2, fy + fSize/2);
+      translate(fx + fSize / 2, fy + fSize / 2);
       let fcSize = 5;
       let fPreviewSize = 36;
-      for (let x = -fPreviewSize/2; x < fPreviewSize/2; x += fcSize) {
-        for (let y = -fPreviewSize/2; y < fPreviewSize/2; y += fcSize) {
-          if ((floor((x + fPreviewSize/2) / fcSize) + floor((y + fPreviewSize/2) / fcSize)) % 2 === 0) fill(8, 8, 15);
+      for (let x = -fPreviewSize / 2; x < fPreviewSize / 2; x += fcSize) {
+        for (let y = -fPreviewSize / 2; y < fPreviewSize / 2; y += fcSize) {
+          if ((floor((x + fPreviewSize / 2) / fcSize) + floor((y + fPreviewSize / 2) / fcSize)) % 2 === 0) fill(8, 8, 15);
           else fill(18, 18, 25);
           rect(x, y, fcSize, fcSize);
         }
       }
-      
+
       // 썸네일 드로잉
       let img = val[f];
       let scaleRatio = min(fPreviewSize / img.width, fPreviewSize / img.height, 1.0);
       imageMode(CENTER);
       image(img, 0, 0, img.width * scaleRatio, img.height * scaleRatio);
       pop();
-      
+
       // 프레임 번호
       fill(180, 180, 200);
       textSize(9);
@@ -883,7 +883,7 @@ function assetViewerMousePressed() {
   let exitY = height - 50;
   let exitW = 200;
   let exitH = 50;
-  if (mouseX > exitX - exitW/2 && mouseX < exitX + exitW/2 && mouseY > exitY - exitH/2 && mouseY < exitY + exitH/2) {
+  if (mouseX > exitX - exitW / 2 && mouseX < exitX + exitW / 2 && mouseY > exitY - exitH / 2 && mouseY < exitY + exitH / 2) {
     gameState = "LOBBY";
     clearEffects();
     return;
@@ -913,7 +913,7 @@ function assetViewerMousePressed() {
     let canvasH = height - 180;
     let infoY = height - 145;
     let infoH = 125;
-    
+
     let btnX = canvasX + canvasW - 140;
     let btnY = infoY + infoH - 35;
     let btnW = 120;

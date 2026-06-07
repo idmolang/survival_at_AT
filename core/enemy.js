@@ -41,7 +41,7 @@ class Enemy {
       this.x += cos(angle) * this.speed;
       this.y += sin(angle) * this.speed;
     }
-    
+
     if (!offScreen) {
       this.facing = (dx > 0) ? 1 : -1;
 

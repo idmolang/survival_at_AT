@@ -133,7 +133,7 @@ class Projectile {
           this.vx = cos(currentAngle) * this.speed;
           this.vy = sin(currentAngle) * this.speed;
         }
-      } 
+      }
       else {
         // ── 일반 발사체 호밍 유도 (기존 방식) ──
         if (!this.homingTarget || this.homingTarget.hp <= 0 || !enemies.includes(this.homingTarget)) {
@@ -209,12 +209,12 @@ class Projectile {
     // 휘파람 화살 고유 다단히트 판정 (2프레임 간격)
     if (this.isWhistlingArrow) {
       if (this.whistlingHitCooldowns.has(e)) return;
-      
+
       // 조금 더 넓고 쾌적하게 닿도록 판정 크기를 35px로 튜닝
       if (dist(this.x, this.y, e.x, e.y) < this.size / 2 + 35) {
         e.takeDamage(this.damage, this.x, this.y, 0); // 넉백 없음
         this.whistlingHitCooldowns.set(e, 2); // 2프레임 쿨다운!
-        
+
         // 피격 시 튕기는 전기 스파크 연출
         spawnEffect(new SparkEffect(e.x, e.y, [100, 200, 255]));
       }

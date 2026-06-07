@@ -1,15 +1,15 @@
 // 무기 & 패시브 메타데이터 정의
 
 const WEAPONS_INFO = [
-  { class: P5jsIconSkill,       passiveInfo: 'Passion',      name: 'p5js',          icon: 'p5js'     },
-  { class: UnibookSkill,        passiveInfo: 'Review',       name: 'Unibook',       icon: 'unibook'  },
-  { class: MouseSkill,          passiveInfo: 'AirForce',     name: 'Mouse',         icon: 'mouse'    },
-  { class: UsbSkill,            passiveInfo: 'Note',         name: 'USB',           icon: 'usb'      },
-  { class: LaptopSkill,         passiveInfo: 'AirPod',       name: '노트북',        icon: 'laptop'   },
-  { class: WifiSkill,           passiveInfo: 'HakSik',       name: 'Wifi',          icon: 'wifi'     },
-  { class: SeniorSummonSkill,   passiveInfo: 'Shield',       name: '선배들의 조언', icon: 'senior'   },
-  { class: ProfessorCancelSkill,passiveInfo: 'Sleep',        name: '교수님의 휴강선언', icon: 'professor' },
-  { class: CrammingSkill,       passiveInfo: 'EnergyDrink',  name: '벼락치기',      icon: 'cramming' },
+  { class: P5jsIconSkill, passiveInfo: 'Passion', name: 'p5js', icon: 'p5js' },
+  { class: UnibookSkill, passiveInfo: 'Review', name: 'Unibook', icon: 'unibook' },
+  { class: MouseSkill, passiveInfo: 'AirForce', name: 'Mouse', icon: 'mouse' },
+  { class: UsbSkill, passiveInfo: 'Note', name: 'USB', icon: 'usb' },
+  { class: LaptopSkill, passiveInfo: 'AirPod', name: '노트북', icon: 'laptop' },
+  { class: WifiSkill, passiveInfo: 'HakSik', name: 'Wifi', icon: 'wifi' },
+  { class: SeniorSummonSkill, passiveInfo: 'Shield', name: '선배들의 조언', icon: 'senior' },
+  { class: ProfessorCancelSkill, passiveInfo: 'Sleep', name: '교수님의 휴강선언', icon: 'professor' },
+  { class: CrammingSkill, passiveInfo: 'EnergyDrink', name: '벼락치기', icon: 'cramming' },
 ];
 
 const PASSIVES_INFO = [

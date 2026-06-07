@@ -10,15 +10,15 @@ class WifiSkill extends Weapon {
   static EVO_DATA = { dmg: 10, area: 2.0, cd: 10, desc: "타격 시 확률적으로 체력을 회복합니다." };
 
   static RING_COUNT = 4;
-  static PHASE_LEN  = 10;
-  static SWEEP      = 0.60;
+  static PHASE_LEN = 10;
+  static SWEEP = 0.60;
   // Math.PI 사용 (p5 상수는 클래스 정의 시점에 미초기화)
   static DIRS = [0, Math.PI, Math.PI / 2, -Math.PI / 2];
 
   constructor(owner) {
     super(owner);
     this.name = "WiFi";
-    this.id   = "Wifi";
+    this.id = "Wifi";
     this.wifiTimer = 0;
     this.drawBehindPlayer = true; // 플레이어 스프라이트 뒤에 오라 렌더링
   }
@@ -28,11 +28,11 @@ class WifiSkill extends Weapon {
   }
 
   display(stats) {
-    let s   = this.currentStats;
+    let s = this.currentStats;
     let rad = 100 * s.area * stats.area;
     let dmg = s.dmg * stats.attack;
-    let ox  = this.owner.x;
-    let oy  = this.owner.y;
+    let ox = this.owner.x;
+    let oy = this.owner.y;
 
     // ── 1. 히트박스 외곽 원 ──
     push();
@@ -47,21 +47,21 @@ class WifiSkill extends Weapon {
     pop();
 
     // ── 2. 동서남북 와이파이 호 (1→2→3→4 순환) ──
-    let cycleLen    = WifiSkill.RING_COUNT * WifiSkill.PHASE_LEN;
-    let phase       = floor(this.wifiTimer % cycleLen / WifiSkill.PHASE_LEN); // 0~3
+    let cycleLen = WifiSkill.RING_COUNT * WifiSkill.PHASE_LEN;
+    let phase = floor(this.wifiTimer % cycleLen / WifiSkill.PHASE_LEN); // 0~3
     let activeCount = phase + 1; // 1~4
 
     push();
     noFill();
     for (let d = 0; d < WifiSkill.DIRS.length; d++) {
       let centerAngle = WifiSkill.DIRS[d];
-      let sw          = WifiSkill.SWEEP;
+      let sw = WifiSkill.SWEEP;
 
       for (let i = 0; i < WifiSkill.RING_COUNT; i++) {
         // 호 반지름: 안에서 밖으로 (히트박스 안쪽 ~80% 범위)
-        let ringRad   = ((i + 1) / WifiSkill.RING_COUNT) * (rad * 0.78);
-        let isActive  = i < activeCount;
-        let isNewest  = (i === activeCount - 1);
+        let ringRad = ((i + 1) / WifiSkill.RING_COUNT) * (rad * 0.78);
+        let isActive = i < activeCount;
+        let isNewest = (i === activeCount - 1);
 
         // 가장 최근 활성 호 펄스
         let pulse = isNewest
@@ -76,14 +76,14 @@ class WifiSkill extends Weapon {
           stroke(120, 215, 255, 52 * pulse);
           strokeWeight(8);
           arc(ox, oy, ringRad * 2, ringRad * 2,
-              centerAngle - sw, centerAngle + sw);
+            centerAngle - sw, centerAngle + sw);
         }
 
         // 호 본체
         stroke(80, 200, 255, alpha);
         strokeWeight(lineW);
         arc(ox, oy, ringRad * 2, ringRad * 2,
-            centerAngle - sw, centerAngle + sw, OPEN);
+          centerAngle - sw, centerAngle + sw, OPEN);
       }
     }
 

@@ -355,18 +355,18 @@ class LaptopFallEffect extends BaseEffect {
     this.targetY = targetY;
     this.rad = rad;
     this.dmg = dmg;
-    
+
     // 낙하 애니메이션 설정 (더 빠른 속도로 깔아뭉개듯 20프레임 동안 낙하)
     this.duration = 20;
     this.elapsed = 0;
-    
+
     // 시작 위치 (대각선 하늘 위)
     this.startX = targetX - 150;
     this.startY = targetY - 500;
-    
+
     this.x = this.startX;
     this.y = this.startY;
-    
+
     this.rot = random(TWO_PI);
     this.rotSpeed = random(0.12, 0.28);
   }
@@ -378,16 +378,16 @@ class LaptopFallEffect extends BaseEffect {
       this.explode();
       return;
     }
-    
+
     let t = this.elapsed / this.duration;
-    
+
     // t에 ease-in 효과를 3제곱하여 낙하 속도를 대폭 가속화 (중력감 증폭)
     let tEase = t * t * t;
     this.x = lerp(this.startX, this.targetX, tEase);
     this.y = lerp(this.startY, this.targetY, tEase);
-    
+
     this.rot += this.rotSpeed;
-    
+
     // 낙하 중 은은한 불꽃/연기 잔상 효과 추가
     if (frameCount % 2 === 0) {
       spawnEffect(new TrailDotEffect(this.x, this.y, [255, 120, 30]));
@@ -403,16 +403,16 @@ class LaptopFallEffect extends BaseEffect {
         }
       }
     }
-    
+
     // 2. 폭발 이펙트 스폰 (3중 화염 구체 + 파편)
     spawnEffect(new MeteorExplosionEffect(this.targetX, this.targetY, this.rad));
-    
+
     // 3. 원형 충격파 스폰
     spawnEffect(new ShockwaveEffect(this.targetX, this.targetY, [255, 120, 50], this.rad));
-    
+
     // 4. 부서진 노트북 잔해 이펙트 스폰
     spawnEffect(new LaptopDebrisEffect(this.targetX, this.targetY));
-    
+
     // 5. 범위 표시용 투사체 스폰 (기존의 projectiles.push 구조 유지)
     if (typeof projectiles !== 'undefined' && typeof projPool !== 'undefined') {
       projectiles.push(
@@ -423,7 +423,7 @@ class LaptopFallEffect extends BaseEffect {
 
   display() {
     push();
-    
+
     // ── 1. 대형 그림자 그리기 ──
     let t = this.elapsed / this.duration;
     // 낙하할수록 그림자가 더 짙어지며 중앙으로 수렴
@@ -432,7 +432,7 @@ class LaptopFallEffect extends BaseEffect {
     noStroke();
     fill(0, 0, 0, shadowAlpha);
     ellipse(this.targetX, this.targetY, 110 * shadowScale, 40 * shadowScale);
-    
+
     // ── 2. 떨어지는 대형 노트북 그리기 ──
     translate(this.x, this.y);
     rotate(this.rot);
@@ -446,7 +446,7 @@ class LaptopFallEffect extends BaseEffect {
       fill(200);
       rect(-45, -35, 90, 70, 4);
     }
-    
+
     pop();
     imageMode(CORNER); // imageMode(CENTER) 누출 차단
   }
@@ -462,10 +462,10 @@ class LaptopDebrisEffect extends BaseEffect {
     // 잔해 유지 시간을 120프레임에서 60프레임(약 1초)으로 축소하여 빠르게 사라지도록 수정
     this.duration = 60;
     this.elapsed = 0;
-    
+
     // 잔해 조각 정보 설정
     this.pieces = [];
-    
+
     // 잔해 1: laptop_destroy_01.png
     this.pieces.push({
       imgKey: 'laptop_destroy_01',
@@ -476,7 +476,7 @@ class LaptopDebrisEffect extends BaseEffect {
       rotSpd: random(-0.15, 0.15),
       size: random(50, 65)
     });
-    
+
     // 잔해 2: laptop_destroy_02.png
     this.pieces.push({
       imgKey: 'laptop_destroy_02',
@@ -487,7 +487,7 @@ class LaptopDebrisEffect extends BaseEffect {
       rotSpd: random(-0.15, 0.15),
       size: random(40, 55)
     });
-    
+
     // 잔해 3: 추가적인 파편 조각 (작은 칩이나 나사 느낌으로 랜덤 배치)
     let extraCount = floor(random(2, 4));
     for (let i = 0; i < extraCount; i++) {
@@ -509,16 +509,16 @@ class LaptopDebrisEffect extends BaseEffect {
       this.isDead = true;
       return;
     }
-    
+
     // 각 조각들의 물리 업데이트 (사방으로 튀었다가 바닥에 가라앉음)
     for (let p of this.pieces) {
       p.ox += p.vx;
       p.oy += p.vy;
-      
+
       // 마찰력/감쇠
       p.vx *= 0.85;
       p.vy *= 0.85;
-      
+
       // 회전 속도 감쇠
       p.rot += p.rotSpd;
       p.rotSpd *= 0.85;
@@ -527,16 +527,16 @@ class LaptopDebrisEffect extends BaseEffect {
 
   display() {
     push();
-    
+
     // 35프레임 이후부터 페이드 아웃 시작
     let alpha = 255;
     if (this.elapsed > 35) {
       alpha = map(this.elapsed, 35, this.duration, 255, 0);
     }
-    
+
     tint(255, 255, 255, alpha);
     imageMode(CENTER);
-    
+
     for (let p of this.pieces) {
       let img = gameImages[p.imgKey];
       if (img) {
@@ -547,7 +547,7 @@ class LaptopDebrisEffect extends BaseEffect {
         pop();
       }
     }
-    
+
     noTint();
     pop();
     // imageMode 기본값 복원 (CORNER가 p5.js 기본값)
@@ -738,7 +738,7 @@ class WifiSkillEffect extends BaseEffect {
 
       let baseAlpha = isActive ? 200 : 28;
       let ringAlpha = baseAlpha * pulse * fade;
-      let ringW     = isActive ? 2.5 : 1.0;
+      let ringW = isActive ? 2.5 : 1.0;
 
       // 활성 링 외곽 글로우
       if (isActive) {
@@ -808,7 +808,7 @@ class SeniorPunchImpactEffect extends BaseEffect {
 
     // ── 충격파 링 ──
     this.rings = [
-      { r: 0, maxR: 90,  life: 1.0 },
+      { r: 0, maxR: 90, life: 1.0 },
       { r: 0, maxR: 140, life: 0.8 },
     ];
 
@@ -917,19 +917,19 @@ class DataLinkEffect extends BaseEffect {
     this.y2 = y2;
     this.life = 1.0;
   }
-  
+
   update() {
     this.life -= 0.18; // 빠르게 페이드아웃 (약 5-6프레임)
     if (this.life <= 0) this.isDead = true;
   }
-  
+
   display() {
     push();
     // 외곽 네온 사이언 글로우 라인
     stroke(0, 255, 255, this.life * 140);
     strokeWeight(2.0 * this.life);
     line(this.x1, this.y1, this.x2, this.y2);
-    
+
     // 코어 백색 라인
     stroke(255, 255, 255, this.life * 220);
     strokeWeight(0.7 * this.life);
@@ -946,7 +946,7 @@ class UsbVortexShowcaseEffect extends BaseEffect {
     super(x, y);
     this.rad = 90;
     this.life = 1.0;
-    
+
     // 휘몰아칠 파일 확장자 및 폴더 생성
     let fileTypes = ['.js', '.json', '.html', '.css', '.py', '.cpp', '.png', '.jpg', '1', '0', '1', '0'];
     this.files = [];
@@ -963,7 +963,7 @@ class UsbVortexShowcaseEffect extends BaseEffect {
     }
     this.connectAnim = 0;
   }
-  
+
   update() {
     if (this.connectAnim < 15) {
       this.connectAnim++;
@@ -980,14 +980,14 @@ class UsbVortexShowcaseEffect extends BaseEffect {
     this.life -= 0.003; // 수명 약 300프레임 (5초)
     if (this.life <= 0) this.isDead = true;
   }
-  
+
   display() {
     let lifeRatio = this.life;
     let rad = this.rad;
     let expandRatio = this.connectAnim < 15 ? lerp(0.1, 1.0, this.connectAnim / 15.0) : 1.0;
-    
+
     push();
-    
+
     // ── 0. 명확한 스킬 범위 경계선 렌더링 ──
     noStroke();
     fill(0, 140, 255, 10 * lifeRatio);
@@ -1082,7 +1082,7 @@ class UsbVortexShowcaseEffect extends BaseEffect {
         pop();
       }
     }
-    
+
     // 모의 데미지 빔/스파크 생성
     if (this.connectAnim >= 15 && frameCount % 20 === 0) {
       let angle = random(TWO_PI);
@@ -1092,9 +1092,9 @@ class UsbVortexShowcaseEffect extends BaseEffect {
       spawnEffect(new SparkEffect(tx, ty, [80, 200, 255]));
       spawnEffect(new DataLinkEffect(this.x, this.y, tx, ty));
     }
-    
+
     pop();
-    
+
     // 전역 그리기 상태 리셋 (UI 흔들림 방지)
     // p5.js 기본값으로 복원: rectMode = CORNER (CENTER 아님!)
     rectMode(CORNER);

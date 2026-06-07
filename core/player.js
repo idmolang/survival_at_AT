@@ -53,7 +53,7 @@ class Player {
     let s = this.stats;
     if (this.hp < s.maxHp) this.hp = min(s.maxHp, this.hp + s.hpRegen);
     if (this.invincibleTimer > 0) this.invincibleTimer--;
-    
+
     let dx = 0;
     let dy = 0;
     if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
@@ -72,7 +72,7 @@ class Player {
       this.y += s.moveSpeed;
       dy = 1;
     }
-    
+
     // 움직임이 있을 때 방향 상태 업데이트
     if (dx !== 0 || dy !== 0) {
       this.isMoving = true;
@@ -105,7 +105,7 @@ class Player {
       this.animFrame = 0;
       this.animTimer = 0;
     }
-    
+
     this.x = constrain(this.x, -MAP_SIZE, MAP_SIZE);
     this.y = constrain(this.y, -MAP_SIZE, MAP_SIZE);
     for (let w of this.weapons) w.update(s);
@@ -118,17 +118,17 @@ class Player {
     }
 
     push();
-    
+
     // 피격 시 빨간 깜빡임 효과 및 틴트 적용
     if (this.invincibleTimer > 0 && frameCount % 10 < 5) {
       tint(255, 100, 100, 150);
     }
-    
+
     // 캐릭터 이미지 렌더링 (방향 상태에 맞는 이미지 선택)
     push();
     translate(this.x, this.y - 8);
     imageMode(CENTER);
-    
+
     let sprite = null;
     let frames = gameImages[`player_${this.direction}_frames`];
     if (frames && frames.length > 0) {
@@ -141,7 +141,7 @@ class Player {
       else if (this.direction === 'up') sprite = gameImages.player_up;
       else sprite = gameImages.player_down;
     }
-    
+
     if (sprite) {
       image(sprite, 0, 0, 40, 75);
     } else {
@@ -152,19 +152,19 @@ class Player {
       ellipse(0, 8, 40, 40);
     }
     pop();
-    
+
     // HP 바 배경
     noStroke();
     fill(50);
     rectMode(CENTER);
     rect(this.x, this.y + 30, 40, 6);
-    
+
     // HP 바 체력 표시
     fill(50, 255, 50);
     rectMode(CORNER);
     let hpW = map(this.hp, 0, s.maxHp, 0, 40);
     rect(this.x - 20, this.y + 27, hpW, 6);
-    
+
     pop();
 
     // 2패스: 플레이어 앞에 그려야 할 무기

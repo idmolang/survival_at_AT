@@ -7,6 +7,6 @@ class BaseEffect {
     this.y = y;
     this.isDead = false;
   }
-  update() {}
-  display() {}
+  update() { }
+  display() { }
 }

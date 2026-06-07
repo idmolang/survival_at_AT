@@ -5,7 +5,7 @@ class DamageText {
     this.damage = floor(damage);
     this.life = 30;
   }
-  reset() {}
+  reset() { }
   update() {
     this.y -= 1.5;
     this.life--;

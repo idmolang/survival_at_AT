@@ -30,11 +30,11 @@ class UnibookSkill extends Weapon {
 
     if (this.activeTimer > 0) {
       this.activeTimer--;
-      
+
       // 유니북 순회 회전 속도를 시원하고 쾌속하게 복원/상향 (진화형: 0.12, 일반형: 레벨속도 * 2.2)
       let rotationSpeed = this.isEvolved ? 0.12 : s.spd * 2.2;
       this.angle += rotationSpeed;
-      
+
       if (this.activeTimer <= 0) {
         this.cooldownTimer = cdRate;
       }
@@ -60,18 +60,18 @@ class UnibookSkill extends Weapon {
       // ── 절차적 유니북 책 렌더링 ──
       push();
       noStroke();
-      
+
       // 2. 예시 이미지 책 뭉치 형태 바탕에, 실제 gameImages.unibook 이미지를 표지로 합성하여 출력!
       this.drawBookShape(sx, sy, 24, 28);
-      
+
       pop();
 
       // ── 히트 판정 & 이펙트 ──
       for (let e of enemies) {
-        if (dist(sx, sy, e.x, e.y) < 25) { 
+        if (dist(sx, sy, e.x, e.y) < 25) {
           if (!e.lastUnibookHitFrames) e.lastUnibookHitFrames = {};
           let lastHit = e.lastUnibookHitFrames[i] || 0;
-          
+
           if (frameCount - lastHit > 20) {
             e.takeDamage(dmg, sx, sy, 3.0);
             e.lastUnibookHitFrames[i] = frameCount;
@@ -125,7 +125,7 @@ class UnibookSkill extends Weapon {
     // ── 4. 상단 페이지 뭉치 (Stacked Pages at the Top) ──
     fill(250, 250, 248);
     rect(pagesX + pagesW / 2, pagesY + pagesH / 2, pagesW, pagesH);
-    
+
     // 페이지 가로선 디테일
     stroke(180, 180, 185);
     strokeWeight(1);
