@@ -4,6 +4,11 @@
 // ═══════════════════════════════════════════════
 
 let gameState = "LOBBY";
+let isAdmin = false;
+let showAdminModal = false;
+let enteredPassword = "";
+let showPasswordInput = false;
+let passwordErrorTimer = 0;
 
 let player;
 let enemies = [];
@@ -144,7 +149,9 @@ function drawGame() {
           gameState = "GAME_CLEAR";
           continue;
         }
-        gems.push(gemPool.get(e.x, e.y, e.expValue));
+        if (!e.noGemDrop) {
+          gems.push(gemPool.get(e.x, e.y, e.expValue));
+        }
         enemyPool.release(e); enemies.splice(i, 1);
         continue;
       }
@@ -227,36 +234,98 @@ function drawGrid() {
 
 function mousePressed() {
   if (gameState === "LOBBY") {
-    let bx = width / 2; let bw = 280; let bh = 60;
-    // 1. 게임 시작 (yOffset: 20)
-    let by = height / 2 + 20;
-    if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
+    if (showPasswordInput) {
+      // Consume clicks when password input is visible
+      return;
+    }
+    
+    if (showAdminModal) {
+      let mW = 400;
+      let mH = 320;
+      let mX = (width - mW) / 2;
+      let mY = (height - mH) / 2;
+      
+      let itemY = mY + 85;
+      let itemH = 45;
+      let spacing = 12;
+      
+      let options = [
+        { id: "TEST_MODE" },
+        { id: "ASSET_VIEWER" },
+        { id: "LOGOUT" },
+        { id: "CLOSE" }
+      ];
+      
+      for (let i = 0; i < options.length; i++) {
+        let opt = options[i];
+        let oy = itemY + i * (itemH + spacing);
+        let ox = mX + 30;
+        let ow = mW - 60;
+        
+        if (mouseX > ox && mouseX < ox + ow && mouseY > oy && mouseY < oy + itemH) {
+          if (opt.id === "TEST_MODE") {
+            testSelectedWeapons = []; testSelectedPassives = []; isTestModeWeaponSelect = true;
+            gameState = "TEST_SKILL_SELECT";
+            showAdminModal = false;
+          } else if (opt.id === "ASSET_VIEWER") {
+            gameState = "ASSET_VIEWER";
+            initAssetViewer();
+            showAdminModal = false;
+          } else if (opt.id === "LOGOUT") {
+            isAdmin = false;
+            showAdminModal = false;
+            alert("어드민 로그아웃 되었습니다.");
+          } else if (opt.id === "CLOSE") {
+            showAdminModal = false;
+          }
+          return;
+        }
+      }
+      return; // Dim area clicked, consume event
+    }
+
+    // Map mouse coordinates to 1200x800 space
+    let aspect = 1200 / 800;
+    let s = min(width / 1200, height / 800);
+    let tx = (width - 1200 * s) / 2;
+    let ty = (height - 800 * s) / 2;
+    
+    let lx = (mouseX - tx) / s;
+    let ly = (mouseY - ty) / s;
+    
+    // 1. 게임 시작 (START GAME)
+    if (lx >= 440 && lx <= 760 && ly >= 530 && ly <= 590) {
       initGame(); gameState = "IN_GAME";
     }
-    // 2. 게임 방법 (yOffset: 100)
-    by = height / 2 + 100;
-    if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
+    // 2. 게임 방법 (HOW TO PLAY)
+    else if (lx >= 440 && lx <= 760 && ly >= 615 && ly <= 675) {
       gameState = "HOW_TO_PLAY";
     }
-    // 3. 테스트 모드 (yOffset: 180)
-    by = height / 2 + 180;
-    if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
-      testSelectedWeapons = []; testSelectedPassives = []; isTestModeWeaponSelect = true;
-      gameState = "TEST_SKILL_SELECT";
-    }
-    // 4. 에셋 & 이펙트 뷰어 (yOffset: 260)
-    by = height / 2 + 260;
-    if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
-      gameState = "ASSET_VIEWER";
-      initAssetViewer();
+    // 3. 게임 종료 (EXIT)
+    else if (lx >= 960 && lx <= 1140 && ly >= 682 && ly <= 738) {
+      if (confirm("게임을 종료하시겠습니까?")) {
+        window.close();
+      }
     }
   } else if (gameState === "ASSET_VIEWER") {
     assetViewerMousePressed();
   } else if (gameState === "HOW_TO_PLAY" || gameState === "GAME_OVER" || gameState === "GAME_CLEAR") {
-    let bx = width / 2; let by = height - 150; let bw = 250; let bh = 60;
-    if (gameState !== "HOW_TO_PLAY") by = height / 2 + 80;
-    if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
-      gameState = "LOBBY";
+    if (gameState === "HOW_TO_PLAY") {
+      let aspect = 1200 / 800;
+      let s = min(width / 1200, height / 800);
+      let tx = (width - 1200 * s) / 2;
+      let ty = (height - 800 * s) / 2;
+      let lx = (mouseX - tx) / s;
+      let ly = (mouseY - ty) / s;
+      
+      if (lx >= 500 && lx <= 700 && ly >= 724 && ly <= 766) {
+        gameState = "LOBBY";
+      }
+    } else {
+      let bx = width / 2; let by = height / 2 + 80; let bw = 250; let bh = 60;
+      if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
+        gameState = "LOBBY";
+      }
     }
   } else if (gameState === "TEST_SKILL_SELECT") {
     let list = isTestModeWeaponSelect ? WEAPONS_INFO : PASSIVES_INFO;
@@ -343,4 +412,43 @@ function isOnScreen(x, y, margin = 100) {
     y >= player.y - height / 2 - margin &&
     y <= player.y + height / 2 + margin
   );
+}
+
+function keyPressed() {
+  if (gameState === "LOBBY") {
+    if (showPasswordInput) {
+      if (keyCode === BACKSPACE) {
+        enteredPassword = enteredPassword.slice(0, -1);
+      } else if (keyCode === ENTER) {
+        if (enteredPassword === "1515") {
+          isAdmin = true;
+          showPasswordInput = false;
+          showAdminModal = true;
+          enteredPassword = "";
+        } else {
+          enteredPassword = "";
+          passwordErrorTimer = 90; // Show error for 90 frames (~1.5s)
+        }
+      } else if (keyCode === ESCAPE) {
+        showPasswordInput = false;
+        enteredPassword = "";
+      } else if (key >= '0' && key <= '9') {
+        if (enteredPassword.length < 10) {
+          enteredPassword += key;
+          passwordErrorTimer = 0;
+        }
+      }
+      return; // Consume key presses while typing password
+    }
+
+    if (key === '=') {
+      if (!isAdmin) {
+        showPasswordInput = true;
+        enteredPassword = "";
+        passwordErrorTimer = 0;
+      } else {
+        showAdminModal = !showAdminModal;
+      }
+    }
+  }
 }

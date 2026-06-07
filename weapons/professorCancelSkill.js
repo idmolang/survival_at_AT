@@ -7,7 +7,7 @@ class ProfessorCancelSkill extends Weapon {
     { dmg: 9999, cd: 1800, desc: "쿨타임 감소" },
     { dmg: 9999, cd: 1200, desc: "쿨타임 대폭 감소" }
   ];
-  static EVO_DATA = { dmg: 99999, cd: 900, desc: "전체 적 처치 및 막대한 보너스 경험치 획득" };
+  static EVO_DATA = { dmg: 99999, cd: 1200, desc: "전체 적 처치 및 막대한 보너스 경험치 획득" };
 
   constructor(owner) {
     super(owner);
@@ -20,6 +20,9 @@ class ProfessorCancelSkill extends Weapon {
     let rate = max(120, s.cd * stats.cooldown);
     if (frameCount % floor(rate) === 0) {
       let dmg = s.dmg * stats.attack;
+      if (bossActive) {
+        dmg = 10000;
+      }
 
       // ── 화면 화이트 플래시 ──
       spawnEffect(new ScreenFlashEffect([255, 255, 255], 30));
@@ -32,7 +35,11 @@ class ProfessorCancelSkill extends Weapon {
 
       for (let e of enemies) {
         e.takeDamage(dmg, e.x, e.y, 0);
-        if (this.isEvolved) e.expValue *= 3;
+        if (this.isEvolved) {
+          e.expValue *= 3;
+        } else {
+          e.noGemDrop = true;
+        }
         // ── 각 적마다 소멸 이펙트 ──
         spawnEffect(new EnemyVanishEffect(e.x, e.y));
       }

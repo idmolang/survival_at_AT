@@ -1,4 +1,7 @@
 class Enemy {
+  constructor() {
+    this.noGemDrop = false;
+  }
   init(px, py, m, playerLevel) {
     let angle = random(TWO_PI);
     let r = random(width / 2 + 50, width / 2 + 200);
@@ -12,6 +15,7 @@ class Enemy {
     this.expValue = 10 + m * 5;
     this.facing = (px > this.x) ? 1 : -1;
     this.imgIndex = floor(random(0, 16));
+    this.noGemDrop = false;
   }
   reset() { }
   takeDamage(amount, sourceX, sourceY, knockback = 1.0) {

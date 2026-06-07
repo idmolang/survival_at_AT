@@ -13,10 +13,10 @@ function preload() {
   gameImages.mouse = loadImage('assets/images/mouse.png');
 
   // 플레이어 스프라이트 단일 이미지 (폴백용)
-  gameImages.player_down = loadImage('assets/player/player_down.png');
-  gameImages.player_left = loadImage('assets/player/player_left.png');
-  gameImages.player_right = loadImage('assets/player/player_right.png');
-  gameImages.player_up = loadImage('assets/player/player_up.png');
+  gameImages.player_down = loadImage('assets/player/player_down/frame_01.png');
+  gameImages.player_left = loadImage('assets/player/player_left/left_walk_02.png');
+  gameImages.player_right = loadImage('assets/player/player_right/frame_02.png');
+  gameImages.player_up = loadImage('assets/player/player_up/frame_02.png');
 
   // 플레이어 방향별 걷기 애니메이션 프레임 배열
   // down: frame_01, frame_03~frame_25 (24장)

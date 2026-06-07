@@ -643,8 +643,8 @@ class ProfessorAppearEffect extends BaseEffect {
   constructor() {
     super(0, 0);
     this.isScreenEffect = true;
-    // 총 90프레임(약 1.5초): 처음 15프레임 fade-in → 이후 fade-out
-    this.totalFrames = 90;
+    // 총 45프레임: 처음 15프레임 fade-in → 이후 30프레임 fade-out
+    this.totalFrames = 45;
     this.elapsed = 0;
     this.alpha = 0;
   }
@@ -656,7 +656,7 @@ class ProfessorAppearEffect extends BaseEffect {
       return;
     }
     // 처음 15프레임: fade-in (0 → 200)
-    // 이후 75프레임: fade-out (200 → 0)
+    // 이후 30프레임: fade-out (200 → 0)
     if (this.elapsed <= 15) {
       this.alpha = map(this.elapsed, 0, 15, 0, 200);
     } else {
