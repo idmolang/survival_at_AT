@@ -12,7 +12,7 @@ class Enemy {
     this.maxHp = 10 + (m * m) * 12 + playerLevel * 4 + ((m > 10) ? (m - 10) * 300 : 0);
     this.vx = 0;
     this.vy = 0;
-    this.expValue = 10 + m * 5;
+    this.expValue = 5 + min(15, floor(m * 0.8));
     this.facing = (px > this.x) ? 1 : -1;
     this.imgIndex = floor(random(0, 16));
     this.noGemDrop = false;
@@ -72,10 +72,39 @@ class Enemy {
     if (this.facing === 1) {
       scale(-1, 1);
     }
+    
+    let isAssignment = this.isAdditionalAssignment;
+    let size = isAssignment ? (this.size || 110) : 40;
+    
     let img = (gameImages.enemy_images && gameImages.enemy_images.length > 0) ? gameImages.enemy_images[this.imgIndex] : null;
-    if (img) {
+    
+    if (isAssignment) {
+      // 추가 과제 전용 대형 리포트 디자인 (빨간색 테두리 및 네온 글로우)
+      rectMode(CENTER);
+      drawingContext.shadowColor = 'rgba(255, 50, 50, 0.7)';
+      drawingContext.shadowBlur = 20;
+      
+      fill(25, 20, 20, 235);
+      stroke(255, 50, 50, 220);
+      strokeWeight(3);
+      rect(0, 0, size * 0.8, size, 8);
+      
+      // 글자
+      noStroke();
+      fill(255, 200, 200);
+      textSize(size * 0.14);
+      textStyle(BOLD);
+      textAlign(CENTER, CENTER);
+      text("추가 과제", 0, -size * 0.15);
+      
+      // 노트 가로줄
+      stroke(255, 50, 50, 150);
+      strokeWeight(2);
+      line(-size * 0.25, size * 0.1, size * 0.25, size * 0.1);
+      line(-size * 0.25, size * 0.22, size * 0.15, size * 0.22);
+    } else if (img) {
       imageMode(CENTER);
-      image(img, 0, 0, 40, 40);
+      image(img, 0, 0, size, size);
     } else {
       // 이미지 미로딩 시 청록색 백업 사각형
       fill(100, 200, 255);
@@ -86,15 +115,19 @@ class Enemy {
     pop();
 
     // HP 체력바 그리기 (반전 스케일링의 영향을 받지 않도록 처리)
+    let hpBarW = isAssignment ? 90 : 30;
+    let hpBarH = isAssignment ? 8 : 5;
+    let hpBarY = isAssignment ? size / 2 + 12 : 22;
+
     fill(50);
     noStroke();
     rectMode(CENTER);
-    rect(0, 22, 30, 5);
+    rect(0, hpBarY, hpBarW, hpBarH);
 
     fill(100, 255, 100);
     let fillRatio = constrain(this.hp / this.maxHp, 0, 1);
     rectMode(CORNER);
-    rect(-15, 19.5, 30 * fillRatio, 5);
+    rect(-hpBarW / 2, hpBarY - hpBarH / 2, hpBarW * fillRatio, hpBarH);
     pop();
   }
 }

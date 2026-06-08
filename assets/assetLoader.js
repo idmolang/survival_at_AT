@@ -7,6 +7,10 @@
 let gameImages = {};
 
 function preload() {
+  // 배경 이미지
+  gameImages.background = loadImage('assets/images/content.png');
+  gameImages.how_to_play = loadImage('assets/images/how_to_play.png');
+
   // 발사체 비주얼 아이콘
   gameImages.p5js = loadImage('assets/images/p5js.png');
   gameImages.unibook = loadImage('assets/images/unibook.png');
@@ -99,6 +103,9 @@ function preload() {
 
   // 교수님 이미지 (휴강선언 연출용)
   gameImages.professor = loadImage('assets/images/professor.png');
+
+  // 보스 이미지
+  gameImages.boss = loadImage('assets/images/boss.png');
 }
 
 // USB 이미지의 회색/어두운 체크무늬 배경을 동적으로 걷어내고 투명 아웃라인만 남기는 필터

@@ -1,13 +1,13 @@
 class CrammingSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
-    { dmg: 25, cd: 150, proj: 1, area: 1.0, desc: "무작위 적에게 벼락이 떨어집니다." },
-    { dmg: 25, cd: 150, proj: 2, area: 1.1, desc: "벼락 1개 추가, 범위 증가" },
-    { dmg: 50, cd: 150, proj: 3, area: 1.1, desc: "벼락 1개 추가, 데미지 증가" },
-    { dmg: 50, cd: 150, proj: 4, area: 1.3, desc: "벼락 1개 추가, 범위 증가" },
-    { dmg: 80, cd: 150, proj: 5, area: 1.3, desc: "벼락 1개 추가, 데미지 증가" }
+    { dmg: 40, cd: 120, proj: 1, area: 1.1, desc: "무작위 적에게 벼락이 떨어집니다." },
+    { dmg: 45, cd: 120, proj: 2, area: 1.25, desc: "벼락 1개 추가, 범위 증가" },
+    { dmg: 85, cd: 120, proj: 3, area: 1.25, desc: "벼락 1개 추가, 데미지 증가" },
+    { dmg: 90, cd: 120, proj: 4, area: 1.45, desc: "벼락 1개 추가, 범위 증가" },
+    { dmg: 140, cd: 120, proj: 5, area: 1.45, desc: "벼락 1개 추가, 데미지 증가" }
   ];
-  static EVO_DATA = { dmg: 160, cd: 90, proj: 6, area: 1.5, desc: "벼락이 친 자리에 짧은 딜레이 후 두 번 타격합니다." };
+  static EVO_DATA = { dmg: 280, cd: 75, proj: 6, area: 1.7, desc: "벼락이 친 자리에 짧은 딜레이 후 두 번 타격합니다." };
 
   constructor(owner) {
     super(owner);

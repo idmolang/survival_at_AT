@@ -1,13 +1,13 @@
 class UnibookSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
-    { dmg: 15, cd: 180, dur: 120, proj: 1, spd: 0.03, area: 1.0, desc: "플레이어 주변을 맴도는 책 생성" },
-    { dmg: 15, cd: 180, dur: 150, proj: 2, spd: 0.05, area: 1.0, desc: "책 1개 추가, 속도 및 지속시간 증가" },
-    { dmg: 15, cd: 180, dur: 150, proj: 3, spd: 0.07, area: 1.25, desc: "책 1개 추가, 범위 및 속도 증가" },
-    { dmg: 25, cd: 180, dur: 180, proj: 4, spd: 0.07, area: 1.25, desc: "책 1개 추가, 지속시간 및 데미지 증가" },
-    { dmg: 40, cd: 180, dur: 180, proj: 5, spd: 0.07, area: 1.25, desc: "책 1개 추가, 데미지 증가" }
+    { dmg: 20, cd: 140, dur: 120, proj: 1, spd: 0.04, area: 1.1, desc: "플레이어 주변을 맴도는 책 생성" },
+    { dmg: 25, cd: 140, dur: 150, proj: 2, spd: 0.06, area: 1.1, desc: "책 1개 추가, 속도 및 지속시간 증가" },
+    { dmg: 30, cd: 140, dur: 150, proj: 3, spd: 0.08, area: 1.35, desc: "책 1개 추가, 범위 및 속도 증가" },
+    { dmg: 40, cd: 140, dur: 180, proj: 4, spd: 0.08, area: 1.35, desc: "책 1개 추가, 지속시간 및 데미지 증가" },
+    { dmg: 65, cd: 140, dur: 180, proj: 5, spd: 0.09, area: 1.4, desc: "책 1개 추가, 데미지 증가" }
   ];
-  static EVO_DATA = { dmg: 50, cd: 1, dur: 999999, proj: 6, spd: 0.1, area: 1.5, desc: "책이 영구적으로 주변을 맴돕니다." };
+  static EVO_DATA = { dmg: 90, cd: 1, dur: 999999, proj: 7, spd: 0.12, area: 1.7, desc: "책이 영구적으로 주변을 맴돕니다." };
 
   constructor(owner) {
     super(owner);

@@ -150,16 +150,16 @@ class LaserChargeEffect extends BaseEffect {
     for (let p of this.particles) {
       if (p.life <= 0) continue;
       let alpha = p.life * 200;
-      fill(255, 80, 80, alpha * 0.4);
+      fill(50, 150, 255, alpha * 0.4);
       ellipse(p.x, p.y, p.size * 2.5, p.size * 2.5);
-      fill(255, 150, 150, alpha);
+      fill(150, 220, 255, alpha);
       ellipse(p.x, p.y, p.size, p.size);
     }
     // 차지 코어 글로우
     let glow = sin(frameCount * 0.3) * 0.3 + 0.7;
-    fill(255, 80, 80, this.life * 80 * glow);
+    fill(50, 150, 255, this.life * 80 * glow);
     ellipse(this.x, this.y, 40 * glow, 40 * glow);
-    fill(255, 200, 200, this.life * 150 * glow);
+    fill(200, 240, 255, this.life * 150 * glow);
     ellipse(this.x, this.y, 15 * glow, 15 * glow);
     pop();
   }
@@ -170,7 +170,7 @@ class LaserChargeEffect extends BaseEffect {
 // 사용: Senior Blaster 발사 시
 // ═══════════════════════════════════════════════════════════
 class LaserBeamEffect extends BaseEffect {
-  constructor(x, y, angle, width, col = [255, 50, 50]) {
+  constructor(x, y, angle, width, col = [50, 150, 255]) {
     super(x, y);
     this.angle = angle;
     this.beamWidth = width;
@@ -239,7 +239,7 @@ class LaserBeamEffect extends BaseEffect {
       let alpha = s.life * 220;
       fill(this.col[0], this.col[1], this.col[2], alpha * 0.5);
       ellipse(s.x, s.y, s.size * 2, s.size * 2);
-      fill(255, 200, 200, alpha);
+      fill(200, 240, 255, alpha);
       ellipse(s.x, s.y, s.size, s.size);
     }
     pop();
@@ -264,7 +264,7 @@ class MeteorExplosionEffect extends BaseEffect {
         x: x, y: y,
         vx: cos(a) * spd, vy: sin(a) * spd - random(2, 5),
         size: random(4, 14),
-        col: random() < 0.5 ? [255, 120, 30] : [255, 200, 50],
+        col: random() < 0.5 ? [50, 150, 255] : [100, 220, 255],
         life: random(0.6, 1.0)
       });
     }
@@ -309,9 +309,9 @@ class MeteorExplosionEffect extends BaseEffect {
 
     // ── 폭발 코어 ──
     let coreScale = 1.0 + (1.0 - this.life) * 0.5;
-    fill(255, 255, 200, this.life * 100);
+    fill(100, 200, 255, this.life * 100);
     ellipse(this.x, this.y, this.rad * coreScale * 0.8, this.rad * coreScale * 0.8);
-    fill(255, 180, 50, this.life * 150);
+    fill(50, 150, 255, this.life * 150);
     ellipse(this.x, this.y, this.rad * coreScale * 0.5, this.rad * coreScale * 0.5);
     fill(255, 255, 255, this.life * 200);
     ellipse(this.x, this.y, this.rad * coreScale * 0.2, this.rad * coreScale * 0.2);
@@ -324,7 +324,7 @@ class MeteorExplosionEffect extends BaseEffect {
       ellipse(e.x, e.y, e.size * 2.5, e.size * 2.5);
       fill(e.col[0], e.col[1], e.col[2], alpha);
       ellipse(e.x, e.y, e.size, e.size);
-      fill(255, 255, 200, alpha * 0.6);
+      fill(200, 240, 255, alpha * 0.6);
       ellipse(e.x, e.y, e.size * 0.4, e.size * 0.4);
     }
 
@@ -390,7 +390,7 @@ class LaptopFallEffect extends BaseEffect {
 
     // 낙하 중 은은한 불꽃/연기 잔상 효과 추가
     if (frameCount % 2 === 0) {
-      spawnEffect(new TrailDotEffect(this.x, this.y, [255, 120, 30]));
+      spawnEffect(new TrailDotEffect(this.x, this.y, [50, 150, 255]));
     }
   }
 
@@ -408,7 +408,7 @@ class LaptopFallEffect extends BaseEffect {
     spawnEffect(new MeteorExplosionEffect(this.targetX, this.targetY, this.rad));
 
     // 3. 원형 충격파 스폰
-    spawnEffect(new ShockwaveEffect(this.targetX, this.targetY, [255, 120, 50], this.rad));
+    spawnEffect(new ShockwaveEffect(this.targetX, this.targetY, [50, 200, 255], this.rad));
 
     // 4. 부서진 노트북 잔해 이펙트 스폰
     spawnEffect(new LaptopDebrisEffect(this.targetX, this.targetY));
@@ -416,7 +416,7 @@ class LaptopFallEffect extends BaseEffect {
     // 5. 범위 표시용 투사체 스폰 (기존의 projectiles.push 구조 유지)
     if (typeof projectiles !== 'undefined' && typeof projPool !== 'undefined') {
       projectiles.push(
-        projPool.get(this.targetX, this.targetY, 0, 0, 0, true, this.rad * 2, 20, [255, 100, 50, 45], false)
+        projPool.get(this.targetX, this.targetY, 0, 0, 0, true, this.rad * 2, 20, [100, 200, 255, 45], false)
       );
     }
   }
@@ -848,7 +848,7 @@ class SeniorPunchImpactEffect extends BaseEffect {
       noStroke();
       fill(255, 255, 255, fl * 220);
       ellipse(this.x, this.y, 120 * fl, 120 * fl);
-      fill(255, 120, 80, fl * 180);
+      fill(100, 200, 255, fl * 180);
       ellipse(this.x, this.y, 70 * fl, 70 * fl);
     }
 
@@ -856,10 +856,10 @@ class SeniorPunchImpactEffect extends BaseEffect {
     noFill();
     for (let r of this.rings) {
       if (r.life <= 0) continue;
-      stroke(255, 80, 50, r.life * 200);
+      stroke(50, 150, 255, r.life * 200);
       strokeWeight(3.5 * r.life);
       ellipse(this.x, this.y, r.r * 2, r.r * 2);
-      stroke(255, 200, 100, r.life * 100);
+      stroke(150, 220, 255, r.life * 100);
       strokeWeight(7 * r.life);
       ellipse(this.x, this.y, r.r * 2, r.r * 2);
     }
@@ -871,11 +871,11 @@ class SeniorPunchImpactEffect extends BaseEffect {
       let nx = -s.vx / (sqrt(s.vx * s.vx + s.vy * s.vy) + 0.001);
       let ny = -s.vy / (sqrt(s.vx * s.vx + s.vy * s.vy) + 0.001);
       // 외곽 글로우
-      stroke(255, 80, 50, alpha * 0.35);
+      stroke(50, 150, 255, alpha * 0.35);
       strokeWeight(s.w * 3.5);
       line(s.x, s.y, s.x + nx * s.len, s.y + ny * s.len);
       // 코어
-      stroke(255, 220, 150, alpha);
+      stroke(200, 240, 255, alpha);
       strokeWeight(s.w);
       line(s.x, s.y, s.x + nx * s.len * 0.7, s.y + ny * s.len * 0.7);
     }
@@ -885,17 +885,17 @@ class SeniorPunchImpactEffect extends BaseEffect {
     for (let p of this.sparks) {
       if (p.life <= 0) continue;
       let alpha = p.life * 220;
-      fill(255, 80, 50, alpha * 0.45);
+      fill(50, 150, 255, alpha * 0.45);
       ellipse(p.x, p.y, p.size * 2.5, p.size * 2.5);
-      fill(255, 200, 120, alpha);
+      fill(150, 220, 255, alpha);
       ellipse(p.x, p.y, p.size, p.size);
-      fill(255, 255, 200, alpha * 0.7);
+      fill(220, 245, 255, alpha * 0.7);
       ellipse(p.x, p.y, p.size * 0.4, p.size * 0.4);
     }
 
     // ── 5. 중심 잔광 코어 ──
     noStroke();
-    fill(255, 150, 80, this.life * 160);
+    fill(100, 180, 255, this.life * 160);
     ellipse(this.x, this.y, 30 * this.life, 30 * this.life);
     fill(255, 255, 255, this.life * 200);
     ellipse(this.x, this.y, 12 * this.life, 12 * this.life);

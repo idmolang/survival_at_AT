@@ -1,13 +1,13 @@
 class MouseSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
-    { dmg: 20, cd: 120, dur: 300, proj: 1, spd: 3, desc: "적을 관통하고 화면 가장자리에서 튕깁니다." },
-    { dmg: 20, cd: 120, dur: 400, proj: 1, spd: 5, desc: "속도 및 지속시간 증가" },
-    { dmg: 50, cd: 120, dur: 400, proj: 2, spd: 5, desc: "데미지 증가 및 발사체 1개 증가" },
-    { dmg: 50, cd: 120, dur: 500, proj: 2, spd: 8, desc: "속도 및 지속시간 증가" },
-    { dmg: 80, cd: 120, dur: 500, proj: 3, spd: 8, desc: "발사체 1개 증가, 데미지 증가" }
+    { dmg: 30, cd: 90, dur: 300, proj: 1, spd: 4, desc: "적을 관통하고 화면 가장자리에서 튕깁니다." },
+    { dmg: 35, cd: 90, dur: 400, proj: 1, spd: 6, desc: "속도 및 지속시간 증가" },
+    { dmg: 75, cd: 90, dur: 400, proj: 2, spd: 6, desc: "데미지 증가 및 발사체 1개 증가" },
+    { dmg: 80, cd: 90, dur: 500, proj: 2, spd: 9, desc: "속도 및 지속시간 증가" },
+    { dmg: 120, cd: 90, dur: 500, proj: 3, spd: 10, desc: "발사체 1개 증가, 데미지 증가" }
   ];
-  static EVO_DATA = { dmg: 80, cd: 90, dur: 9999, proj: 1, spd: 8, desc: "마우스 커서가 적을 끝없이 추적하며 관통합니다." };
+  static EVO_DATA = { dmg: 150, cd: 60, dur: 9999, proj: 1, spd: 11, desc: "마우스 커서가 적을 끝없이 추적하며 관통합니다." };
 
   constructor(owner) {
     super(owner);

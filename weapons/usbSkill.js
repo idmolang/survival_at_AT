@@ -1,17 +1,17 @@
 class UsbSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
-    { dmg: 5, cd: 120, dur: 120, proj: 1, area: 1.0, desc: "무작위 위치에 데미지 장판 생성" },
-    { dmg: 5, cd: 120, dur: 150, proj: 2, area: 1.2, desc: "병 1개 추가, 크기 및 지속시간 증가" },
-    { dmg: 10, cd: 120, dur: 150, proj: 3, area: 1.5, desc: "병 1개 추가, 데미지 및 크기 증가" },
-    { dmg: 15, cd: 120, dur: 180, proj: 4, area: 1.5, desc: "병 1개 추가, 데미지 및 지속시간 증가" },
-    { dmg: 25, cd: 120, dur: 180, proj: 4, area: 2.0, desc: "데미지 및 크기 대폭 증가" }
+    { dmg: 12, cd: 90, dur: 240, proj: 1, area: 1.1, desc: "무작위 위치에 데미지 장판 생성" },
+    { dmg: 15, cd: 90, dur: 300, proj: 2, area: 1.3, desc: "병 1개 추가, 크기 및 지속시간 증가" },
+    { dmg: 25, cd: 90, dur: 300, proj: 3, area: 1.6, desc: "병 1개 추가, 데미지 및 크기 증가" },
+    { dmg: 35, cd: 90, dur: 360, proj: 4, area: 1.7, desc: "병 1개 추가, 데미지 및 지속시간 증가" },
+    { dmg: 55, cd: 90, dur: 360, proj: 4, area: 2.2, desc: "데미지 및 크기 대폭 증가" }
   ];
-  static EVO_DATA = { dmg: 35, cd: 60, dur: 300, proj: 6, area: 2.5, desc: "거대 장판이 플레이어 쪽으로 모여듭니다." };
+  static EVO_DATA = { dmg: 75, cd: 45, dur: 600, proj: 6, area: 2.8, desc: "거대 장판이 플레이어 쪽으로 모여듭니다." };
 
   constructor(owner) {
     super(owner);
-    this.name = "USB";
+    this.name = "USB 폭풍";
     this.id = "USB";
     this.zones = [];
   }
@@ -19,8 +19,16 @@ class UsbSkill extends Weapon {
   update(stats) {
     let s = this.currentStats;
     let rate = max(30, s.cd * stats.cooldown);
+    
+    // 만약 어떤 이유로든 활성 장판 수가 s.proj 한도를 초과했다면 초과분을 먼저 제거
+    while (this.zones.length > s.proj) {
+      this.zones.shift();
+    }
+
     if (frameCount % floor(rate) === 0) {
-      for (let i = 0; i < s.proj; i++) {
+      // 최대 허용 개수(s.proj)보다 활성화된 장판이 적을 때만 차이만큼 충전 스폰
+      let spawnCount = s.proj - this.zones.length;
+      for (let i = 0; i < spawnCount; i++) {
         let zx = this.owner.x + random(-300, 300);
         let zy = this.owner.y + random(-300, 300);
         let rad = 50 * s.area * stats.area;
@@ -49,10 +57,6 @@ class UsbSkill extends Weapon {
           files: files,
           connectAnim: 0
         });
-
-        while (this.zones.length > 6) {
-          this.zones.shift();
-        }
 
         // 장판 생성 시 넓게 퍼지는 파란 충격파
         spawnEffect(new ShockwaveEffect(zx, zy, [80, 180, 255], rad));

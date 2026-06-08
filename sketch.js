@@ -25,6 +25,7 @@ let skillChoices = [];
 let testSelectedWeapons = [];
 let testSelectedPassives = [];
 let isTestModeWeaponSelect = true;
+let rerollCount = 3;
 
 let bossActive = false;
 let currentBoss = null;
@@ -54,6 +55,7 @@ function initGame() {
   enemies = []; damageTexts = []; gems = []; projectiles = [];
   score = 0; level = 1; currentLevelStartExp = 0; nextLevelExp = 50;
   gameFrames = 0;
+  rerollCount = 3;
   clearEffects(); // 이펙트 풀 리셋
   player.addWeapon(new P5jsIconSkill(player));
 
@@ -84,6 +86,7 @@ function drawGame() {
   let camX = width / 2 - player.x;
   let camY = height / 2 - player.y;
   translate(camX, camY);
+  
   drawGrid();
 
   if (gameState === "IN_GAME") { gameFrames++; player.update(); }
@@ -131,8 +134,8 @@ function drawGame() {
     if (gameState === "IN_GAME") {
       e.update(player.x, player.y, enemies);
 
-      // 보스 충돌 판정 크기 상향 (65px) 및 일반 적 판정 (35px)
-      let colDist = (e instanceof Boss) ? 65 : 35;
+      // 보스 충돌 판정 크기 상향 (85px) 및 일반 적 판정 (35px)
+      let colDist = (e instanceof Boss) ? 85 : 35;
       let colDmg = (e instanceof Boss) ? 15 : 10;
       // 대략적인 좌표 검사로 무거운 dist() 계산을 95% 이상 바이패스
       if (Math.abs(player.x - e.x) < colDist && Math.abs(player.y - e.y) < colDist) {
@@ -158,7 +161,9 @@ function drawGame() {
     }
     // 화면에 보이는 몬스터만 렌더링하여 프레임 드랍 완벽 방지
     if (isOnScreen(e.x, e.y, 50)) {
-      e.display();
+      if (!(e instanceof Boss)) {
+        e.display();
+      }
     }
   }
 
@@ -167,17 +172,6 @@ function drawGame() {
     if (gameState === "IN_GAME") p.update();
     p.display();
     if (p.isDead) { projPool.release(p); projectiles.splice(i, 1); }
-  }
-
-  // ── 보스 투사체 업데이트 및 플레이어 피격 검출 (월드 좌표계) ──
-  for (let i = bossProjectiles.length - 1; i >= 0; i--) {
-    let bp = bossProjectiles[i];
-    if (gameState === "IN_GAME") {
-      bp.update();
-      bp.checkHit(player);
-    }
-    bp.display();
-    if (bp.isDead) { bossProjectiles.splice(i, 1); }
   }
 
   for (let i = damageTexts.length - 1; i >= 0; i--) {
@@ -190,6 +184,22 @@ function drawGame() {
   // ── 이펙트 시스템 업데이트 (월드 좌표계) ──
   if (gameState === "IN_GAME") {
     updateAndDrawEffects();
+  }
+
+  // ── 보스 렌더링 (플레이어 스킬 이펙트 위에 그림) ──
+  if (bossActive && currentBoss) {
+    currentBoss.display();
+  }
+
+  // ── 보스 투사체 업데이트 및 플레이어 피격 검출 (월드 좌표계) ──
+  for (let i = bossProjectiles.length - 1; i >= 0; i--) {
+    let bp = bossProjectiles[i];
+    if (gameState === "IN_GAME") {
+      bp.update();
+      bp.checkHit(player);
+    }
+    bp.display();
+    if (bp.isDead) { bossProjectiles.splice(i, 1); }
   }
 
   pop();
@@ -284,41 +294,56 @@ function mousePressed() {
       return; // Dim area clicked, consume event
     }
 
-    // Map mouse coordinates to 1200x800 space
-    let aspect = 1200 / 800;
-    let s = min(width / 1200, height / 800);
-    let tx = (width - 1200 * s) / 2;
-    let ty = (height - 800 * s) / 2;
+    let aspectWidth = gameImages.background ? 1672 : 1200;
+    let aspectHeight = gameImages.background ? 941 : 800;
+    
+    let s = min(width / aspectWidth, height / aspectHeight);
+    let tx = (width - aspectWidth * s) / 2;
+    let ty = (height - aspectHeight * s) / 2;
     
     let lx = (mouseX - tx) / s;
     let ly = (mouseY - ty) / s;
     
-    // 1. 게임 시작 (START GAME)
-    if (lx >= 440 && lx <= 760 && ly >= 530 && ly <= 590) {
-      initGame(); gameState = "IN_GAME";
-    }
-    // 2. 게임 방법 (HOW TO PLAY)
-    else if (lx >= 440 && lx <= 760 && ly >= 615 && ly <= 675) {
-      gameState = "HOW_TO_PLAY";
-    }
-    // 3. 게임 종료 (EXIT)
-    else if (lx >= 960 && lx <= 1140 && ly >= 682 && ly <= 738) {
-      if (confirm("게임을 종료하시겠습니까?")) {
-        window.close();
+    if (gameImages.background) {
+      // 1. 게임 시작 (START GAME)
+      if (lx >= 613 && lx <= 1058 && ly >= 623 && ly <= 693) {
+        initGame(); gameState = "IN_GAME";
+      }
+      // 2. 게임 방법 (HOW TO PLAY)
+      else if (lx >= 613 && lx <= 1058 && ly >= 723 && ly <= 793) {
+        gameState = "HOW_TO_PLAY";
+      }
+    } else {
+      // 1. 게임 시작 (START GAME)
+      if (lx >= 440 && lx <= 760 && ly >= 530 && ly <= 590) {
+        initGame(); gameState = "IN_GAME";
+      }
+      // 2. 게임 방법 (HOW TO PLAY)
+      else if (lx >= 440 && lx <= 760 && ly >= 615 && ly <= 675) {
+        gameState = "HOW_TO_PLAY";
+      }
+      // 3. 게임 종료 (EXIT)
+      else if (lx >= 960 && lx <= 1140 && ly >= 682 && ly <= 738) {
+        if (confirm("게임을 종료하시겠습니까?")) {
+          window.close();
+        }
       }
     }
   } else if (gameState === "ASSET_VIEWER") {
     assetViewerMousePressed();
   } else if (gameState === "HOW_TO_PLAY" || gameState === "GAME_OVER" || gameState === "GAME_CLEAR") {
     if (gameState === "HOW_TO_PLAY") {
-      let aspect = 1200 / 800;
       let s = min(width / 1200, height / 800);
       let tx = (width - 1200 * s) / 2;
       let ty = (height - 800 * s) / 2;
       let lx = (mouseX - tx) / s;
       let ly = (mouseY - ty) / s;
       
-      if (lx >= 500 && lx <= 700 && ly >= 724 && ly <= 766) {
+      let btnX = HOW_TO_PLAY_BACK_BTN.x;
+      let btnY = HOW_TO_PLAY_BACK_BTN.y;
+      let btnW = HOW_TO_PLAY_BACK_BTN.w;
+      let btnH = HOW_TO_PLAY_BACK_BTN.h;
+      if (lx >= btnX - btnW/2 && lx <= btnX + btnW/2 && ly >= btnY - btnH/2 && ly <= btnY + btnH/2) {
         gameState = "LOBBY";
       }
     } else {
@@ -352,7 +377,7 @@ function mousePressed() {
         for (let pInfo of testSelectedPassives) {
           let p = new Passive(pInfo.name, pInfo.id); p.level = 5; player.addPassive(p);
         }
-        gameFrames = 36000;
+        gameFrames = 50400;
         gameState = "IN_GAME";
       }
     }
@@ -448,6 +473,13 @@ function keyPressed() {
         passwordErrorTimer = 0;
       } else {
         showAdminModal = !showAdminModal;
+      }
+    }
+  } else if (gameState === "LEVEL_UP") {
+    if (key === 'r' || key === 'R') {
+      if (rerollCount > 0) {
+        rerollCount--;
+        triggerReroll();
       }
     }
   }

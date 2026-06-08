@@ -1,13 +1,13 @@
 class WifiSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
-    { dmg: 2, area: 1.0, cd: 30, desc: "주변의 적에게 피해를 줍니다." },
-    { dmg: 3, area: 1.2, cd: 30, desc: "크기 및 데미지 증가" },
-    { dmg: 3, area: 1.4, cd: 20, desc: "피해 주기 감소, 크기 증가" },
-    { dmg: 4, area: 1.6, cd: 20, desc: "데미지 및 크기 증가" },
-    { dmg: 5, area: 1.6, cd: 15, desc: "데미지 증가, 피해 주기 감소" }
+    { dmg: 5, area: 1.1, cd: 24, desc: "주변의 적에게 피해를 줍니다." },
+    { dmg: 8, area: 1.3, cd: 24, desc: "크기 및 데미지 증가" },
+    { dmg: 10, area: 1.5, cd: 18, desc: "피해 주기 감소, 크기 증가" },
+    { dmg: 14, area: 1.8, cd: 18, desc: "데미지 및 크기 증가" },
+    { dmg: 20, area: 1.8, cd: 12, desc: "데미지 증가, 피해 주기 감소" }
   ];
-  static EVO_DATA = { dmg: 10, area: 2.0, cd: 10, desc: "타격 시 확률적으로 체력을 회복합니다." };
+  static EVO_DATA = { dmg: 35, area: 2.2, cd: 8, desc: "타격 시 확률적으로 체력을 회복합니다." };
 
   static RING_COUNT = 4;
   static PHASE_LEN = 10;

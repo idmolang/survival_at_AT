@@ -1,13 +1,13 @@
 class SeniorSummonSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
-    { dmg: 30, cd: 180, proj: 1, area: 1.0, desc: "무작위 위치에 생성되어 일직선 레이저 발사" },
-    { dmg: 45, cd: 180, proj: 1, area: 1.2, desc: "데미지 및 레이저 굵기 증가" },
-    { dmg: 45, cd: 150, proj: 2, area: 1.2, desc: "블래스터 1개 추가, 쿨타임 감소" },
-    { dmg: 80, cd: 150, proj: 2, area: 1.5, desc: "데미지 및 레이저 굵기 증가" },
-    { dmg: 80, cd: 120, proj: 3, area: 1.5, desc: "블래스터 1개 추가, 쿨타임 감소" }
+    { dmg: 50, cd: 140, proj: 1, area: 1.1, desc: "무작위 위치에 생성되어 일직선 레이저 발사" },
+    { dmg: 75, cd: 140, proj: 1, area: 1.35, desc: "데미지 및 레이저 굵기 증가" },
+    { dmg: 80, cd: 110, proj: 2, area: 1.35, desc: "블래스터 1개 추가, 쿨타임 감소" },
+    { dmg: 130, cd: 110, proj: 2, area: 1.7, desc: "데미지 및 레이저 굵기 증가" },
+    { dmg: 140, cd: 90, proj: 3, area: 1.7, desc: "블래스터 1개 추가, 쿨타임 감소" }
   ];
-  static EVO_DATA = { dmg: 150, cd: 60, proj: 4, area: 2.3, desc: "화면을 뒤덮는 파괴적인 초거대 레이저 발사" };
+  static EVO_DATA = { dmg: 260, cd: 45, proj: 4, area: 2.6, desc: "화면을 뒤덮는 파괴적인 초거대 레이저 발사" };
 
   constructor(owner) {
     super(owner);
@@ -72,12 +72,12 @@ class SeniorSummonSkill extends Weapon {
           }
         }
         // ── 레이저 발사 이펙트 (벽력일섬 스타일 강화) ──
-        spawnEffect(new LaserBeamEffect(b.x, b.y, b.angle, w, [255, 50, 50]));
+        spawnEffect(new LaserBeamEffect(b.x, b.y, b.angle, w, [50, 150, 255]));
         // 레이저 끝 임팩트 이펙트
         let ex = b.x + cos(b.angle) * 900;
         let ey = b.y + sin(b.angle) * 900;
         spawnEffect(new SeniorPunchImpactEffect(ex, ey, b.angle));
-        let p = projPool.get(b.x, b.y, b.angle, 0, 0, true, w * 2, 15, [255, 0, 0, 200], false);
+        let p = projPool.get(b.x, b.y, b.angle, 0, 0, true, w * 2, 15, [50, 180, 255, 200], false);
         p.isLaser = true;
         projectiles.push(p);
       }
@@ -116,7 +116,7 @@ class SeniorSummonSkill extends Weapon {
 
           // 아우라 글로우 (차징이 찰수록 강해짐)
           noStroke();
-          fill(255, 80, 80, chargeRatio * 120 * pulse);
+          fill(50, 150, 255, chargeRatio * 120 * pulse);
           ellipse(b.x + shake, b.y + shake, 80 * sc * chargeRatio, 80 * sc * chargeRatio);
 
           tint(255, 180 + chargeRatio * 75);
@@ -129,7 +129,7 @@ class SeniorSummonSkill extends Weapon {
           translate(b.x, b.y);
           noStroke(); fill(30, 30, 40);
           ellipse(0, 0, 34, 34);
-          fill(200, 50, 50);
+          fill(50, 120, 200);
           ellipse(0, 0, 24, 24);
           pop();
         }
@@ -139,10 +139,10 @@ class SeniorSummonSkill extends Weapon {
         translate(b.x, b.y);
         rotate(b.angle);
         let blink = sin(frameCount * 0.3) * 0.5 + 0.5;
-        stroke(255, 50, 50, 80 * blink + 20);
+        stroke(50, 150, 255, 80 * blink + 20);
         strokeWeight(w * 0.5);
         line(16, 0, 900, 0);
-        stroke(255, 100, 100, 50 * blink);
+        stroke(100, 200, 255, 50 * blink);
         strokeWeight(w * 1.5);
         line(16, 0, 900, 0);
         pop();
@@ -162,7 +162,7 @@ class SeniorSummonSkill extends Weapon {
 
           // 공격 순간 백색 플래시 글로우 (준비 자세와 똑같은 소환 위치)
           noStroke();
-          fill(255, 100, 100, t * 180);
+          fill(100, 200, 255, t * 180);
           ellipse(b.x, b.y, 100 * sc * t, 100 * sc * t);
 
           tint(255, alpha);
