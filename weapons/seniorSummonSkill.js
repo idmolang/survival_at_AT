@@ -1,3 +1,4 @@
+// [AI 도움] 선배 소환 레이저의 충전 아우라, 가이드선, 투사체 빔 색상을 청록색/파란색 계열로 변경했습니다.
 class SeniorSummonSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [

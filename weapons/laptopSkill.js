@@ -1,3 +1,4 @@
+// [AI 도움] 노트북 메테오의 밸런스 패치로 폭발 범위(area) 수치들을 너프했습니다.
 class LaptopSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [

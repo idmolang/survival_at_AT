@@ -5,11 +5,13 @@
 // ─────────────────────────────────────────────
 
 let gameImages = {};
+let gameSounds = {};
 
 function preload() {
   // 배경 이미지
   gameImages.background = loadImage('assets/images/content.png');
   gameImages.how_to_play = loadImage('assets/images/how_to_play.png');
+  gameImages.map_bg = loadImage('assets/images/map_bg.jpg'); // [AI 도움] 인게임 타일 맵 배경 이미지 로드
 
   // 발사체 비주얼 아이콘
   gameImages.p5js = loadImage('assets/images/p5js.png');
@@ -106,6 +108,12 @@ function preload() {
 
   // 보스 이미지
   gameImages.boss = loadImage('assets/images/boss.png');
+
+  // [AI 도움] 각 상황별 BGM 파일 로드
+  soundFormats('mp3');
+  gameSounds.lobby = loadSound('assets/bgm/lobby.mp3');
+  gameSounds.ingame = loadSound('assets/bgm/ingame.mp3');
+  gameSounds.boss = loadSound('assets/bgm/boss.mp3');
 }
 
 // USB 이미지의 회색/어두운 체크무늬 배경을 동적으로 걷어내고 투명 아웃라인만 남기는 필터

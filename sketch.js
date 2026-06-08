@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════
 // sketch.js — 메인 루프 & 전역 상태만 담당
 // 모든 클래스/함수는 각 파일에서 정의됨
+// [AI 도움] 플레이어 스킬에 가려지지 않도록 보스 및 보스 투사체의 렌더링 순서를 조정하고, 보스 피격 충돌 범위(colDist)를 85로 증가시키는 처리를 수행했습니다.
 // ═══════════════════════════════════════════════
 
 let gameState = "LOBBY";
@@ -9,6 +10,7 @@ let showAdminModal = false;
 let enteredPassword = "";
 let showPasswordInput = false;
 let passwordErrorTimer = 0;
+let currentBgmName = null;
 
 let player;
 let enemies = [];
@@ -66,6 +68,7 @@ function initGame() {
 }
 
 function draw() {
+  handleBGM(); // [AI 도움] 상황별 BGM 관리 함수 호출
   cursor(ARROW);
   if (gameState === "LOBBY") drawLobby();
   else if (gameState === "HOW_TO_PLAY") drawHowToPlay();
@@ -237,12 +240,24 @@ function drawGame() {
 }
 
 function drawGrid() {
-  stroke(40, 40, 60); strokeWeight(1);
-  for (let x = -MAP_SIZE; x <= MAP_SIZE; x += 100) line(x, -MAP_SIZE, x, MAP_SIZE);
-  for (let y = -MAP_SIZE; y <= MAP_SIZE; y += 100) line(-MAP_SIZE, y, MAP_SIZE, y);
+  // [AI 도움] 인게임 배경을 단조로운 격자선 대신 새로 제작한 타일 맵 이미지(map_bg)로 바닥면을 타일링하도록 구현했습니다.
+  if (gameImages.map_bg) {
+    let tileSize = 1000;
+    for (let x = -MAP_SIZE; x < MAP_SIZE; x += tileSize) {
+      for (let y = -MAP_SIZE; y < MAP_SIZE; y += tileSize) {
+        image(gameImages.map_bg, x, y, tileSize, tileSize);
+      }
+    }
+  } else {
+    // 폴백용 격자선
+    stroke(40, 40, 60); strokeWeight(1);
+    for (let x = -MAP_SIZE; x <= MAP_SIZE; x += 100) line(x, -MAP_SIZE, x, MAP_SIZE);
+    for (let y = -MAP_SIZE; y <= MAP_SIZE; y += 100) line(-MAP_SIZE, y, MAP_SIZE, y);
+  }
 }
 
 function mousePressed() {
+  userStartAudio(); // [AI 도움] 브라우저 정책에 대응해 첫 입력 시 오디오 맥락을 활성화합니다
   if (gameState === "LOBBY") {
     if (showPasswordInput) {
       // Consume clicks when password input is visible
@@ -440,6 +455,7 @@ function isOnScreen(x, y, margin = 100) {
 }
 
 function keyPressed() {
+  userStartAudio(); // [AI 도움] 키보드 입력 시에도 오디오 맥락을 활성화합니다
   if (gameState === "LOBBY") {
     if (showPasswordInput) {
       if (keyCode === BACKSPACE) {
@@ -481,6 +497,35 @@ function keyPressed() {
         rerollCount--;
         triggerReroll();
       }
+    }
+  }
+}
+
+// ── [AI 도움] 상황별 BGM을 재생/전환하는 제어 함수 ──
+function handleBGM() {
+  let targetBgmName = null;
+  
+  if (gameState === "LOBBY" || gameState === "HOW_TO_PLAY" || gameState === "TEST_SKILL_SELECT" || gameState === "ASSET_VIEWER") {
+    targetBgmName = "lobby";
+  } else if (gameState === "IN_GAME" || gameState === "LEVEL_UP") {
+    if (bossActive) {
+      targetBgmName = "boss";
+    } else {
+      targetBgmName = "ingame";
+    }
+  }
+  
+  if (currentBgmName !== targetBgmName) {
+    // 이전 BGM 정지
+    if (currentBgmName && typeof gameSounds !== 'undefined' && gameSounds[currentBgmName]) {
+      gameSounds[currentBgmName].stop();
+    }
+    
+    currentBgmName = targetBgmName;
+    
+    // 대상 BGM 재생 시작
+    if (targetBgmName && typeof gameSounds !== 'undefined' && gameSounds[targetBgmName]) {
+      gameSounds[targetBgmName].loop();
     }
   }
 }

@@ -22,6 +22,16 @@ function drawLobby() {
   if (gameImages.background) {
     imageMode(CORNER);
     image(gameImages.background, 0, 0, 1672, 941);
+    
+    // [AI 도움] 메인 화면(로비) 배경 이미지 버전에 제작자 정보 표시
+    push();
+    textAlign(RIGHT, BOTTOM);
+    textSize(18);
+    textStyle(BOLD);
+    fill(255, 255, 255, 200);
+    noStroke();
+    text("제작: 이유준, 이정혁, 최규하", 1630, 910);
+    pop();
   } else {
     // 1. Blackboard wooden frame
     rectMode(CORNER);
@@ -133,6 +143,16 @@ function drawLobby() {
       drawChalkPencil(440, 400, 45); // Left pencil
       drawChalkEraser(730, 400, -30); // Right eraser
     }
+
+    // [AI 도움] 메인 화면(로비) 칠판 버전에 제작자 정보 표시
+    push();
+    textAlign(RIGHT, BOTTOM);
+    textSize(16);
+    textStyle(BOLD);
+    fill(255, 255, 255, 150); // chalk white
+    noStroke();
+    text("제작: 이유준, 이정혁, 최규하", 1140, 760);
+    pop();
   }
   
   // Map mouse coordinates to virtual coordinate system

@@ -1,3 +1,4 @@
+// [AI 도움] USB 장판의 지속시간을 상향 조정하고, 쿨타임 대비 무한 증식을 방지하기 위해 최대 s.proj 개수 이하로만 활성화되도록 제한하는 제한기 로직을 설계 및 구현했습니다.
 class UsbSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [

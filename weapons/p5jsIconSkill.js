@@ -1,3 +1,4 @@
+// [AI 도움] p5js 스킬의 탄막 투사체 색상을 파란색 계열([100, 200, 255])로 조정했습니다.
 class P5jsIconSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
