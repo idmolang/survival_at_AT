@@ -1,13 +1,13 @@
 class MouseSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
-    { dmg: 30, cd: 120, dur: 120, proj: 1, spd: 1.2, desc: "적을 관통하고 화면 가장자리에서 튕깁니다." },
-    { dmg: 35, cd: 120, dur: 130, proj: 1, spd: 1.5, desc: "속도 및 지속시간 증가" },
-    { dmg: 75, cd: 120, dur: 130, proj: 2, spd: 1.5, desc: "데미지 증가 및 발사체 1개 증가" },
-    { dmg: 80, cd: 120, dur: 140, proj: 2, spd: 1.8, desc: "속도 및 지속시간 증가" },
-    { dmg: 130, cd: 120, dur: 150, proj: 3, spd: 2.0, desc: "발사체 1개 증가, 데미지 증가" }
+    { dmg: 30, cd: 120, dur: 120, proj: 1, spd: 2.0, desc: "적을 관통하고 화면 가장자리에서 튕깁니다." },
+    { dmg: 35, cd: 120, dur: 130, proj: 1, spd: 2.3, desc: "속도 및 지속시간 증가" },
+    { dmg: 75, cd: 120, dur: 130, proj: 2, spd: 2.3, desc: "데미지 증가 및 발사체 1개 증가" },
+    { dmg: 80, cd: 120, dur: 140, proj: 2, spd: 2.6, desc: "속도 및 지속시간 증가" },
+    { dmg: 130, cd: 120, dur: 150, proj: 3, spd: 3.0, desc: "발사체 1개 증가, 데미지 증가" }
   ];
-  static EVO_DATA = { dmg: 150, cd: 90, dur: 200, proj: 3, spd: 2.2, desc: "화면 끝에 부딪힐 때마다 광범위 사이버 폭발을 일으키는 마우스 커서들을 소환합니다." };
+  static EVO_DATA = { dmg: 150, cd: 90, dur: 200, proj: 3, spd: 3.0, desc: "화면 끝에 부딪힐 때마다 광범위 사이버 폭발을 일으키는 마우스 커서들을 소환합니다." };
 
   constructor(owner) {
     super(owner);

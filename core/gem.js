@@ -1,8 +1,9 @@
 class Gem {
-  init(x, y, expAmount) {
+  init(x, y, expAmount, type = "EXP") {
     this.x = x;
     this.y = y;
     this.expAmount = expAmount;
+    this.type = type;
     this.isDead = false;
     this.collected = false;
     this.isMoving = false;
@@ -25,11 +26,38 @@ class Gem {
       if (d < 20) {
         this.isDead = true;
         this.collected = true;
-        this.expAmount *= player.stats.exp;
+        if (this.type === "HEAL") {
+          let healAmount = 25; // 25 HP 회복
+          player.hp = min(player.stats.maxHp, player.hp + healAmount);
+          damageTexts.push(damageTextPool.get(player.x, player.y - 30, `+${healAmount} HP`));
+        } else {
+          this.expAmount *= player.stats.exp;
+        }
       }
     }
   }
   display() {
+    if (this.type === "HEAL") {
+      push();
+      translate(this.x, this.y);
+      fill(255, 50, 50); // 빨간색 하트
+      stroke(255, 150, 150); // 분홍색 광택
+      strokeWeight(1.5);
+      
+      // 하트 맥박 애니메이션
+      let scaleRatio = 1.0 + sin(frameCount * 0.1) * 0.15;
+      scale(scaleRatio);
+      
+      // 하트 그리기
+      beginShape();
+      vertex(0, -4);
+      bezierVertex(-7, -11, -13, -4, 0, 8);
+      bezierVertex(13, -4, 7, -11, 0, -4);
+      endShape(CLOSE);
+      pop();
+      return;
+    }
+
     fill(50, 255, 100);
     stroke(20, 150, 50);
     strokeWeight(2);

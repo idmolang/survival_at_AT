@@ -284,30 +284,40 @@ function drawLevelUp() {
     }
     pop();
 
-    // ── status badge (✦ NEW / ▲ UPGRADE) at top-left of the card ──
-    let tagText = isEvo ? "★ EVOLVED" : choice.isUpgrade ? "▲ UPGRADE" : "✦ NEW";
-    let badgeW = 95;
+    // ── status badge (WEAPON/PASSIVE NEW/UPGRADE/EVO) at top-left of the card ──
+    let typeText = isWeapon ? "WEAPON" : "PASSIVE";
+    let statusText = isEvo ? "EVO" : choice.isUpgrade ? "UPGRADE" : "NEW";
+    let tagText = `${typeText} ${statusText}`;
+    let badgeW = 115;
     let badgeH = 24;
     rectMode(CENTER);
     noStroke();
     fill(themeR, themeG, themeB, 240); // Solid pill matching color
-    rect(cx - cardW / 2 + 65, topY + 30, badgeW, badgeH, 6);
+    rect(cx - cardW / 2 + 70, topY + 30, badgeW, badgeH, 6);
     
     fill(255);
     textSize(10);
     textStyle(BOLD);
     textAlign(CENTER, CENTER);
-    text(tagText, cx - cardW / 2 + 65, topY + 29);
+    text(tagText, cx - cardW / 2 + 70, topY + 29);
 
     // ── 스킬 이름 ──
     fill(255);
     textSize(22);
     textStyle(BOLD);
     textAlign(CENTER, CENTER);
-    text(choice.info.name, cx, topY + 185);
+    text(choice.info.name, cx, topY + 172);
+
+    // ── 한 줄 설명 (Flavor Description) ──
+    noStroke();
+    fill(190, 215, 255, 200);
+    textSize(11);
+    textStyle(NORMAL);
+    textAlign(CENTER, CENTER);
+    text(choice.info.flavorDesc || "", cx, topY + 198);
 
     // ── 5성 레벨/희귀도 별 표시 ──
-    let starY = topY + 215;
+    let starY = topY + 220;
     let starSpacing = 16;
     let startStarX = cx - (5 - 1) * starSpacing / 2;
     let numYellow = isEvo ? 5 : choice.isUpgrade ? (choice.existing.level + 1) : 1;
@@ -353,11 +363,33 @@ function drawLevelUp() {
       text(statItem, cx - 100, itemY);
     }
 
-    // ── [AI 도움] 패시브 요구 아이콘 조합법 배지 (하단부) ──
+    // ── [AI 도움] 패시브/무기 요구 아이콘 조합법 배지 (하단부) ──
+    let showRecipe = false;
+    let wIconKey = null;
+    let pIconId = null;
+    let hasWeapon = false;
+    let hasPassive = false;
+
     if (isWeapon) {
+      showRecipe = true;
       let reqPassive = choice.info.passiveInfo;
-      let pInfo = PASSIVES_INFO.find(p => p.id === reqPassive);
-      
+      wIconKey = choice.info.icon;
+      pIconId = reqPassive;
+      hasWeapon = true; // 무기 카드이므로 보유 상태로 처리
+      hasPassive = player.hasPassive(reqPassive);
+    } else {
+      // 패시브 카드인 경우, 이 패시브가 필요한 무기 매칭
+      let matchWeapon = WEAPONS_INFO.find(w => w.passiveInfo === choice.info.id);
+      if (matchWeapon) {
+        showRecipe = true;
+        wIconKey = matchWeapon.icon;
+        pIconId = choice.info.id;
+        hasWeapon = player.weapons.some(w => w instanceof matchWeapon.class);
+        hasPassive = true; // 패시브 카드이므로 보유 상태로 처리
+      }
+    }
+
+    if (showRecipe) {
       let badgeY = cy + cardH / 2 - 42;
       let badgeW = cardW - 40;
       let badgeH = 58;
@@ -378,19 +410,45 @@ function drawLevelUp() {
       
       // 아이콘 드로잉
       let iconSize = 28;
-      let wIcon = gameImages.skill_icons ? gameImages.skill_icons[choice.info.icon] : null;
-      let pIcon = gameImages.passive_icons ? gameImages.passive_icons[reqPassive] : null;
-      let hasPassive = player.hasPassive(reqPassive);
+      let wIcon = gameImages.skill_icons ? gameImages.skill_icons[wIconKey] : null;
+      let pIcon = gameImages.passive_icons ? gameImages.passive_icons[pIconId] : null;
       let iconY = badgeY + 8;
       
       imageMode(CENTER);
       // 1. 무기 아이콘 (왼쪽)
       if (wIcon) {
+        push();
+        if (!hasWeapon) {
+          tint(255, 100, 100, 110); // 무기 미보유 시 붉고 어둡게 처리
+        } else {
+          noTint();
+        }
         image(wIcon, cx - 36, iconY, iconSize, iconSize);
+        pop();
+
+        // 무기 보유 테두리 및 배지
+        let badgeSize = 8;
+        let wx = cx - 36 + iconSize / 2 - 2;
+        let wy = iconY - iconSize / 2 + 2;
+
         noFill();
-        stroke(0, 255, 100, 150); // 무기는 항상 보유 중이므로 초록색 테두리
-        strokeWeight(1.5);
-        rect(cx - 36, iconY, iconSize + 2, iconSize + 2, 4);
+        if (hasWeapon) {
+          stroke(0, 255, 100, 200); // 보유 중이면 밝은 초록 테두리
+          strokeWeight(2.0);
+          rect(cx - 36, iconY, iconSize + 2, iconSize + 2, 4);
+
+          fill(0, 255, 100);
+          noStroke();
+          ellipse(wx, wy, badgeSize, badgeSize);
+        } else {
+          stroke(255, 50, 50, 120); // 미보유면 옅은 빨간 테두리
+          strokeWeight(1.5);
+          rect(cx - 36, iconY, iconSize + 2, iconSize + 2, 4);
+
+          fill(255, 50, 50);
+          noStroke();
+          ellipse(wx, wy, badgeSize, badgeSize);
+        }
       }
       
       // 2. 더하기 기호 (중앙)
@@ -422,7 +480,6 @@ function drawLevelUp() {
           strokeWeight(2.0);
           rect(cx + 36, iconY, iconSize + 2, iconSize + 2, 4);
           
-          // 우측 상단 초록색 미니 원 (체크마크 대용)
           fill(0, 255, 100);
           noStroke();
           ellipse(bx, by, badgeSize, badgeSize);
@@ -431,7 +488,6 @@ function drawLevelUp() {
           strokeWeight(1.5);
           rect(cx + 36, iconY, iconSize + 2, iconSize + 2, 4);
           
-          // 우측 상단 빨간색 미니 원 (X 대용)
           fill(255, 50, 50);
           noStroke();
           ellipse(bx, by, badgeSize, badgeSize);

@@ -9,7 +9,11 @@ class Enemy {
     this.y = py + sin(angle) * r;
     this.speed = random(1.5, 2.5);
     this.hp = 0;
-    this.maxHp = 10 + (m * m) * 12 + playerLevel * 4 + ((m > 10) ? (m - 10) * 300 : 0);
+    let timeFactor = m;
+    if (m > 3) {
+      timeFactor = 3 + (m - 3) * 0.6; // 3분 이후부터는 체력 증가 폭을 완화하여 중반부 (4-10분) 난이도를 너프
+    }
+    this.maxHp = 10 + (timeFactor * timeFactor) * 12 + playerLevel * 4 + ((m > 10) ? (m - 10) * 300 : 0);
     this.vx = 0;
     this.vy = 0;
     this.expValue = 5 + min(15, floor(m * 0.8));
@@ -25,7 +29,9 @@ class Enemy {
       this.vx = cos(angle) * knockback;
       this.vy = sin(angle) * knockback;
     }
-    damageTexts.push(damageTextPool.get(this.x, this.y, amount));
+    if (typeof isOnScreen === 'function' && isOnScreen(this.x, this.y, 20) && damageTexts.length < 40) {
+      damageTexts.push(damageTextPool.get(this.x, this.y, amount));
+    }
   }
   update(px, py, enemiesList) {
     this.x += this.vx;

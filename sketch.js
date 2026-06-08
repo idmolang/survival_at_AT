@@ -116,13 +116,13 @@ function drawGame() {
     if (m < 2) {
       maxEnemies = 20; spawnRate = 120;
     } else if (m < 5) {
-      maxEnemies = 100 + (m - 2) * 30; spawnRate = 40 - (m - 2) * 5;
+      maxEnemies = 60 + (m - 2) * 20; spawnRate = 45 - (m - 2) * 5;
     } else if (m < 7) {
-      maxEnemies = 200 + (m - 5) * 50; spawnRate = 20 - (m - 5) * 5;
+      maxEnemies = 110 + (m - 5) * 25; spawnRate = 30 - (m - 5) * 5;
     } else if (m < 10) {
-      maxEnemies = 300 + (m - 7) * 100; spawnRate = 10 - (m - 7) * 2;
+      maxEnemies = 150 + (m - 7) * 20; spawnRate = 20 - (m - 7) * 4;
     } else {
-      maxEnemies = 400 + (m - 10) * 200; spawnRate = max(1, 3 - floor((m - 10) / 2));
+      maxEnemies = 220; spawnRate = 8; // 후반부 렉 방지를 위해 적 객체수를 220으로 제한하고 스폰 주기를 8프레임으로 완화
     }
 
     // 보스전 중에는 일반 적 자동 스폰을 차단합니다.
@@ -155,7 +155,11 @@ function drawGame() {
           continue;
         }
         if (!e.noGemDrop) {
-          gems.push(gemPool.get(e.x, e.y, e.expValue));
+          if (random() < 0.10) {
+            gems.push(gemPool.get(e.x, e.y, 0, "HEAL"));
+          } else {
+            gems.push(gemPool.get(e.x, e.y, e.expValue, "EXP"));
+          }
         }
         enemyPool.release(e); enemies.splice(i, 1);
         continue;
