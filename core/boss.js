@@ -29,6 +29,7 @@ class Boss extends Enemy {
     this.dashAngle = 0;
     this.deadlineY = 0;
     this.deadlineCenterX = 0;
+    this.deadlineYs = [];
 
     // 말풍선 시스템
     this.speechBubble = null;
@@ -70,7 +71,7 @@ class Boss extends Enemy {
       this.warnings = []; // 경고 정보 지우기
 
       // 패턴 교체
-      let patterns = ["MOVE", "ASSIGNMENT", "F_RING", "DEADLINE", "ATTENDANCE_DASH"];
+      let patterns = ["MOVE", "ASSIGNMENT", "F_RING", "DEADLINE", "ATTENDANCE_DASH", "THESIS_METEOR"];
       let next = random(patterns);
       while (next === this.currentPattern) {
         next = random(patterns);
@@ -82,6 +83,8 @@ class Boss extends Enemy {
         this.patternDuration = 120; // 경고 50프레임 + 발사 50프레임 + 후딜 20프레임
       } else if (this.currentPattern === "ATTENDANCE_DASH") {
         this.patternDuration = 120; // 경고 40프레임 + 돌진 30프레임 + 후딜 50프레임
+      } else if (this.currentPattern === "THESIS_METEOR") {
+        this.patternDuration = 240; // 4초 동안 논문/전공책 폭격
       } else {
         this.patternDuration = 180;
       }
@@ -101,42 +104,43 @@ class Boss extends Enemy {
       }
     }
     else if (this.currentPattern === "ASSIGNMENT") {
-      // 2. 추가 과제! 패턴 (높은 체력을 가진 큰 몹 등장)
+      // 2. 추가 과제! 패턴 (2마리씩 소환)
       this.facing = (px > this.x) ? 1 : -1;
 
-      if (this.patternTimer === 1) {
+      if (this.patternTimer === 0) {
         // 교수님이 추가 과제를 외침!
         this.speechBubble = { text: "추가 과제!", timer: 90 };
 
-        // 큰 몹 소환
-        let spawnX = this.x + random(-150, 150);
-        let spawnY = this.y + random(-150, 150);
-        spawnX = constrain(spawnX, -MAP_SIZE, MAP_SIZE);
-        spawnY = constrain(spawnY, -MAP_SIZE, MAP_SIZE);
+        for (let k = 0; k < 2; k++) {
+          let spawnX = this.x + random(-180, 180);
+          let spawnY = this.y + random(-180, 180);
+          spawnX = constrain(spawnX, -MAP_SIZE, MAP_SIZE);
+          spawnY = constrain(spawnY, -MAP_SIZE, MAP_SIZE);
 
-        let minion = new Enemy();
-        minion.x = spawnX;
-        minion.y = spawnY;
-        minion.speed = 1.0; // heavy
-        minion.maxHp = 6000 + level * 1500;
-        minion.hp = 0;
-        minion.expValue = 0;
-        minion.imgIndex = 0;
-        minion.isAdditionalAssignment = true;
-        minion.size = 110;
-        minion.noGemDrop = true; // no drop
+          let minion = new Enemy();
+          minion.x = spawnX;
+          minion.y = spawnY;
+          minion.speed = 1.0; // heavy
+          minion.maxHp = 3000 + level * 750; // 체력 분산
+          minion.hp = 0;
+          minion.expValue = 0;
+          minion.imgIndex = 0;
+          minion.isAdditionalAssignment = true;
+          minion.size = 90; // 크기 축소
+          minion.noGemDrop = true;
 
-        enemies.push(minion);
-        
-        // 소환 충격파 연출
-        spawnEffect(new ShockwaveEffect(spawnX, spawnY, [255, 50, 50], 120));
+          enemies.push(minion);
+          
+          // 소환 충격파 연출
+          spawnEffect(new ShockwaveEffect(spawnX, spawnY, [255, 50, 50], 100));
+        }
       }
     }
     else if (this.currentPattern === "F_RING") {
       // 3. F학점 소용돌이 살포
       this.facing = (px > this.x) ? 1 : -1;
 
-      if (this.patternTimer === 1) {
+      if (this.patternTimer === 0) {
         this.speechBubble = { text: "F학점!", timer: 90 };
       }
 
@@ -146,21 +150,27 @@ class Boss extends Enemy {
       }
     }
     else if (this.currentPattern === "DEADLINE") {
-      // 4. 마감일 패턴 (가로 빨간 경고선 뒤에 D-1 글자 스윕)
+      // 4. 마감일 패턴 (가로 5라인 빨간 경고선 뒤에 D-1 글자 스윕)
       if (this.patternTimer < 50) {
-        if (this.patternTimer === 1) {
+        if (this.patternTimer === 0) {
           this.speechBubble = { text: "마감일!", timer: 90 };
-          this.deadlineY = py;
           this.deadlineCenterX = px;
+          this.deadlineYs = [];
+          for (let i = 0; i < 5; i++) {
+            this.deadlineYs.push(py + (i - 2) * 140); // 140px 간격으로 5라인 분산
+          }
         }
 
-        this.warnings = [{
-          type: "horizontal_rect",
-          x: this.deadlineCenterX,
-          y: this.deadlineY,
-          w: 1600,
-          h: 110
-        }];
+        this.warnings = [];
+        for (let i = 0; i < 5; i++) {
+          this.warnings.push({
+            type: "horizontal_rect",
+            x: this.deadlineCenterX,
+            y: this.deadlineYs[i],
+            w: 1600,
+            h: 90 // 회피 공간(50px) 확보를 위해 높이 90으로 조정
+          });
+        }
       }
       else if (this.patternTimer >= 50 && this.patternTimer < 100) {
         this.warnings = [];
@@ -168,11 +178,14 @@ class Boss extends Enemy {
         let progress = (this.patternTimer - 50) / 50; // 0 to 1
         let sweepX = lerp(this.deadlineCenterX - 800, this.deadlineCenterX + 800, progress);
 
-        // 플레이어 피격 검출
-        if (abs(py - this.deadlineY) < 55 && abs(px - sweepX) < 70) {
-          if (frameCount % 6 === 0) {
-            player.takeDamage(20);
-            spawnEffect(new ShockwaveEffect(player.x, player.y, [255, 50, 50], 60));
+        // 플레이어 피격 검출 (5개 라인 모두 검출)
+        for (let i = 0; i < 5; i++) {
+          let dy = this.deadlineYs[i];
+          if (abs(py - dy) < 45 && abs(px - sweepX) < 70) {
+            if (frameCount % 6 === 0) {
+              player.takeDamage(15); // 데미지 벨런스 조절
+              spawnEffect(new ShockwaveEffect(player.x, player.y, [255, 50, 50], 60));
+            }
           }
         }
       }
@@ -180,10 +193,32 @@ class Boss extends Enemy {
         this.warnings = [];
       }
     }
+    else if (this.currentPattern === "THESIS_METEOR") {
+      // 5. 전공책 투하 패턴 (깜짝 퀴즈/논문 폭격)
+      this.facing = (px > this.x) ? 1 : -1;
+
+      if (this.patternTimer === 0) {
+        this.speechBubble = { text: "전공책 투하!", timer: 90 };
+      }
+
+      // 15프레임 주기마다 플레이어 근처 무작위 위치에 낙하물 생성
+      if (this.patternTimer % 15 === 0 && this.patternTimer < this.patternDuration - 40) {
+        let targetX = px + random(-300, 300);
+        let targetY = py + random(-300, 300);
+        targetX = constrain(targetX, -MAP_SIZE, MAP_SIZE);
+        targetY = constrain(targetY, -MAP_SIZE, MAP_SIZE);
+
+        let startX = targetX + random(-50, 50);
+        let startY = targetY - 500; // 하늘 위에서 낙하 시작
+
+        let bp = new BossProjectile(startX, startY, targetX, targetY, "THESIS", 20, 20);
+        bossProjectiles.push(bp);
+      }
+    }
     else if (this.currentPattern === "ATTENDANCE_DASH") {
       // 5. 출석 체크 패턴 (요네궁 돌진 ex)
       if (this.patternTimer < 40) {
-        if (this.patternTimer === 1) {
+        if (this.patternTimer === 0) {
           this.speechBubble = { text: "출석 체크!", timer: 90 };
           this.dashAngle = atan2(py - this.y, px - this.x);
         }
@@ -316,25 +351,29 @@ class Boss extends Enemy {
 
       push();
       textAlign(CENTER, CENTER);
-      textSize(88);
+      textSize(72); // 5개 겹침 대비 크기 축소
       textStyle(BOLD);
 
-      // 잔상 모션 블러
-      for (let j = 4; j > 0; j--) {
-        let trailX = sweepX - j * 22;
-        fill(255, 0, 0, 45 - j * 8);
-        noStroke();
-        text("D-1", trailX, this.deadlineY);
+      for (let i = 0; i < 5; i++) {
+        let dy = this.deadlineYs[i];
+
+        // 잔상 모션 블러
+        for (let j = 4; j > 0; j--) {
+          let trailX = sweepX - j * 22;
+          fill(255, 0, 0, 45 - j * 8);
+          noStroke();
+          text("D-1", trailX, dy);
+        }
+
+        // 네온 레드 텍스트 글로우
+        drawingContext.shadowColor = 'rgba(255, 50, 50, 0.9)';
+        drawingContext.shadowBlur = 20;
+
+        stroke(255, 255, 255, 230);
+        strokeWeight(4);
+        fill(255, 0, 0);
+        text("D-1", sweepX, dy - 4);
       }
-
-      // 네온 레드 텍스트 글로우
-      drawingContext.shadowColor = 'rgba(255, 50, 50, 0.9)';
-      drawingContext.shadowBlur = 25;
-
-      stroke(255, 255, 255, 230);
-      strokeWeight(4);
-      fill(255, 0, 0);
-      text("D-1", sweepX, this.deadlineY - 4);
       pop();
     }
 
@@ -394,7 +433,7 @@ class BossProjectile {
     this.y = y;
     this.targetX = targetX;
     this.targetY = targetY;
-    this.type = type; // "F", "ASSIGNMENT"
+    this.type = type; // "F", "ASSIGNMENT", "THESIS"
     this.dmg = dmg;
     this.size = size;
     this.isDead = false;
@@ -413,20 +452,24 @@ class BossProjectile {
       this.duration--;
       if (this.duration <= 0) this.isDead = true;
     }
-    else if (this.type === "ASSIGNMENT") {
-      // 과제지는 하늘 위에서 Target Y 좌표로 낙하
-      this.y += 8;
+    else if (this.type === "ASSIGNMENT" || this.type === "THESIS") {
+      // 과제지 및 전공책은 하늘 위에서 Target Y 좌표로 낙하
+      let fallSpeed = (this.type === "THESIS") ? 10 : 8; // 책이 더 묵직하므로 빠르게 낙하
+      this.y += fallSpeed;
       this.x = lerp(this.x, this.targetX, 0.05);
 
       if (this.y >= this.targetY) {
         this.isDead = true;
         
-        spawnEffect(new ShockwaveEffect(this.targetX, this.targetY, [255, 80, 50], 65));
-        for (let i = 0; i < 5; i++) {
-          spawnEffect(new SparkEffect(this.targetX, this.targetY, [255, 140, 60]));
+        let explosionRad = (this.type === "THESIS") ? 95 : 65;
+        let shockwaveColor = (this.type === "THESIS") ? [100, 150, 255] : [255, 80, 50]; // 전공책은 파란 충격파
+        
+        spawnEffect(new ShockwaveEffect(this.targetX, this.targetY, shockwaveColor, explosionRad));
+        for (let i = 0; i < (this.type === "THESIS" ? 8 : 5); i++) {
+          spawnEffect(new SparkEffect(this.targetX, this.targetY, shockwaveColor));
         }
 
-        if (dist(player.x, player.y, this.targetX, this.targetY) < 65) {
+        if (dist(player.x, player.y, this.targetX, this.targetY) < explosionRad) {
           player.takeDamage(this.dmg);
         }
       }
@@ -434,6 +477,24 @@ class BossProjectile {
   }
 
   display() {
+    // ── 전공책 및 과제지 투하 시 바닥 경고 원 표시 (월드 좌표계) ──
+    if ((this.type === "ASSIGNMENT" || this.type === "THESIS") && this.y < this.targetY) {
+      push();
+      // Y축 낙하 진행율에 따라 경고 영역 점차 축소 및 진해짐
+      let animRatio = constrain((this.targetY - this.y) / 500.0, 0, 1);
+      let rad = (this.type === "THESIS") ? 95 : 65;
+      
+      noStroke();
+      fill(255, 50, 50, 45 * (2 - animRatio)); // 가까워질수록 불투명해짐
+      ellipse(this.targetX, this.targetY, rad * 2, rad * 2);
+      
+      noFill();
+      stroke(255, 50, 50, 180 * (2 - animRatio));
+      strokeWeight(2);
+      ellipse(this.targetX, this.targetY, rad * 2 * animRatio, rad * 2 * animRatio);
+      pop();
+    }
+
     push();
     translate(this.x, this.y);
 
@@ -465,6 +526,30 @@ class BossProjectile {
       line(-8, -8, 8, -8);
       line(-8, -1, 6, -1);
       line(-8, 6, 2, 6);
+    }
+    else if (this.type === "THESIS") {
+      // 전공책 이미지 그리기
+      rotate(frameCount * 0.1);
+      rectMode(CENTER);
+      
+      // 커버
+      fill(45, 90, 200); // 파란 전공책 표지
+      stroke(255, 215, 0); // 금색 테두리
+      strokeWeight(2.5);
+      rect(0, 0, 32, 42, 3);
+      
+      // 내지
+      fill(240);
+      noStroke();
+      rect(13, 0, 3, 36);
+      
+      // 책등 금장 제목선
+      fill(255, 215, 0);
+      rect(-10, 0, 4, 32);
+      
+      // 책갈피 끈
+      fill(255, 50, 50);
+      triangle(-2, 18, 4, 18, 1, 26);
     }
 
     pop();

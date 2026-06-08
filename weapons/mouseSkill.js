@@ -1,56 +1,101 @@
 class MouseSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
-    { dmg: 30, cd: 90, dur: 300, proj: 1, spd: 4, desc: "적을 관통하고 화면 가장자리에서 튕깁니다." },
-    { dmg: 35, cd: 90, dur: 400, proj: 1, spd: 6, desc: "속도 및 지속시간 증가" },
-    { dmg: 75, cd: 90, dur: 400, proj: 2, spd: 6, desc: "데미지 증가 및 발사체 1개 증가" },
-    { dmg: 80, cd: 90, dur: 500, proj: 2, spd: 9, desc: "속도 및 지속시간 증가" },
-    { dmg: 120, cd: 90, dur: 500, proj: 3, spd: 10, desc: "발사체 1개 증가, 데미지 증가" }
+    { dmg: 30, cd: 120, dur: 120, proj: 1, spd: 1.2, desc: "적을 관통하고 화면 가장자리에서 튕깁니다." },
+    { dmg: 35, cd: 120, dur: 130, proj: 1, spd: 1.5, desc: "속도 및 지속시간 증가" },
+    { dmg: 75, cd: 120, dur: 130, proj: 2, spd: 1.5, desc: "데미지 증가 및 발사체 1개 증가" },
+    { dmg: 80, cd: 120, dur: 140, proj: 2, spd: 1.8, desc: "속도 및 지속시간 증가" },
+    { dmg: 130, cd: 120, dur: 150, proj: 3, spd: 2.0, desc: "발사체 1개 증가, 데미지 증가" }
   ];
-  static EVO_DATA = { dmg: 150, cd: 60, dur: 9999, proj: 1, spd: 11, desc: "마우스 커서가 적을 끝없이 추적하며 관통합니다." };
+  static EVO_DATA = { dmg: 150, cd: 90, dur: 200, proj: 3, spd: 2.2, desc: "화면 끝에 부딪힐 때마다 광범위 사이버 폭발을 일으키는 마우스 커서들을 소환합니다." };
 
   constructor(owner) {
     super(owner);
     this.name = "마우스";
     this.id = "마우스";
-    this.evolvedProjectiles = []; // 진화된 영구 투사체 레퍼런스 보유
   }
 
   update(stats) {
     let s = this.currentStats;
 
+    // 이 무기가 발사한 활성 상태의 마우스 투사체만 필터링
+    let activeProjectiles = projectiles.filter(p => p.launcher === this && !p.isDead);
+
+    // 혹시 모를 오동작 대비: s.proj 초과분 제거
+    while (activeProjectiles.length > s.proj) {
+      let p = activeProjectiles.shift();
+      p.isDead = true;
+    }
+
     if (this.isEvolved) {
-      // ── 휘파람 화살 (최종진화 마우스) 모드: 필드에 딱 1개만 상시 유지 ──
-      this.evolvedProjectiles = (this.evolvedProjectiles || []).filter(p => !p.isDead && projectiles.includes(p));
+      // ── 최종 진화: 벽 튕김 및 폭발하는 여러 마우스 소환 ──
 
-      if (this.evolvedProjectiles.length < 1) {
-        let a = random(TWO_PI);
-        let dmg = s.dmg * stats.attack;
-        let spd = s.spd * stats.moveSpeed * 1.6; // 초고속 휘파람 화살 질주 (1.6배 보정)
-        let dur = 999999;                       // 사실상 영구 지속
+      // 처음 진화 시 혹은 모두 사라졌을 때 즉시 스폰하여 공백 시간 제거
+      if (activeProjectiles.length === 0) {
+        let spawnCount = s.proj;
+        for (let i = 0; i < spawnCount; i++) {
+          let a = random(TWO_PI);
+          let dmg = s.dmg * stats.attack;
+          let spd = s.spd * stats.moveSpeed;
+          let dur = s.dur * stats.duration; // 시간 지나면 사라지도록 유한한 지속시간 설정
 
-        let p = projPool.get(
-          this.owner.x, this.owner.y, a, dmg, spd, true,
-          18, dur, [100, 200, 255], false, 0
-        );
+          let p = projPool.get(
+            this.owner.x, this.owner.y, a, dmg, spd, true,
+            18, dur, [100, 200, 255], true, 0
+          );
 
-        p.imgKey = 'mouse';
-        p.imgRotationSpeed = 0;
-        p.imgAngleOffset = -PI / 4;
-        p.imgScale = 1.25;                      // 위용 있는 크기
+          p.imgKey = 'mouse';
+          p.imgRotationSpeed = 0;
+          p.imgAngleOffset = -PI / 4;
+          p.imgScale = 1.25;
 
-        p.isHoming = true;
-        p.isBounce = false;
-        p.homingTurnSpeed = 0.22;               // 몬스터들을 예리하게 꺾어 들이받는 회전각 상향
-        p.speed = spd;
-        p.isWhistlingArrow = true;              // 다단히트 및 트레일 스폰 활성화
+          p.isHoming = false;
+          p.isBounce = true;
+          p.speed = spd;
+          p.isWhistlingArrow = false;
+          p.isEvolvedMouse = true;
+          p.launcher = this;
 
-        projectiles.push(p);
-        this.evolvedProjectiles.push(p);
+          projectiles.push(p);
+          activeProjectiles.push(p);
 
-        // 스폰 연출
-        spawnEffect(new MuzzleFlashEffect(this.owner.x, this.owner.y, a, [100, 200, 255]));
-        spawnEffect(new ShockwaveEffect(this.owner.x, this.owner.y, [100, 200, 255], 85));
+          spawnEffect(new MuzzleFlashEffect(this.owner.x, this.owner.y, a, [100, 200, 255]));
+        }
+        spawnEffect(new ShockwaveEffect(this.owner.x, this.owner.y, [100, 200, 255], 120));
+      }
+
+      // 주기적으로 부족한 개수만큼 채워서 스폰 (AirPods 쿨다운 영향 받음)
+      let rate = max(30, s.cd * stats.cooldown);
+      if (frameCount % floor(rate) === 0) {
+        let spawnCount = s.proj - activeProjectiles.length;
+        for (let i = 0; i < spawnCount; i++) {
+          let a = random(TWO_PI);
+          let dmg = s.dmg * stats.attack;
+          let spd = s.spd * stats.moveSpeed;
+          let dur = s.dur * stats.duration;
+
+          let p = projPool.get(
+            this.owner.x, this.owner.y, a, dmg, spd, true,
+            18, dur, [100, 200, 255], true, 0
+          );
+
+          p.imgKey = 'mouse';
+          p.imgRotationSpeed = 0;
+          p.imgAngleOffset = -PI / 4;
+          p.imgScale = 1.25;
+
+          p.isHoming = false;
+          p.isBounce = true;
+          p.speed = spd;
+          p.isWhistlingArrow = false;
+          p.isEvolvedMouse = true;
+          p.launcher = this;
+
+          projectiles.push(p);
+          activeProjectiles.push(p);
+
+          spawnEffect(new MuzzleFlashEffect(this.owner.x, this.owner.y, a, [100, 200, 255]));
+        }
       }
       return;
     }
@@ -58,7 +103,8 @@ class MouseSkill extends Weapon {
     // ── 최종 진화 전: 일반 쿨다운 주기 발사 ──
     let rate = max(30, s.cd * stats.cooldown);
     if (frameCount % floor(rate) === 0) {
-      for (let i = 0; i < s.proj; i++) {
+      let spawnCount = s.proj - activeProjectiles.length;
+      for (let i = 0; i < spawnCount; i++) {
         let a = random(TWO_PI);
         let dmg = s.dmg * stats.attack;
         let spd = s.spd * stats.moveSpeed;
@@ -72,8 +118,10 @@ class MouseSkill extends Weapon {
         p.imgRotationSpeed = 0;
         p.imgAngleOffset = -PI / 4;
         p.imgScale = 1.0;
+        p.launcher = this;
 
         projectiles.push(p);
+        activeProjectiles.push(p);
         spawnEffect(new MuzzleFlashEffect(this.owner.x, this.owner.y, a, [100, 200, 255]));
       }
     }

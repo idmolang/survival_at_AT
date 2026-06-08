@@ -101,7 +101,7 @@ class WifiSkill extends Weapon {
         if (dist(ox, oy, e.x, e.y) < rad) {
           e.takeDamage(dmg, ox, oy, 0);
           if (this.isEvolved && random() < 0.05) {
-            this.owner.hp = min(this.owner.stats.maxHp, this.owner.hp + 1);
+            this.owner.hp = min(this.owner.stats.maxHp, this.owner.hp + 0.1);
           }
           spawnEffect(new SparkEffect(e.x, e.y, [200, 200, 255]));
         }

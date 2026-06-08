@@ -490,7 +490,7 @@ function drawAdminModal() {
   
   // Center Modal Panel
   let mW = 400;
-  let mH = 320;
+  let mH = 260; // [AI 도움] 옵션 축소에 맞춰 모달 높이 조절
   let mX = (width - mW) / 2;
   let mY = (height - mH) / 2;
   
@@ -515,7 +515,6 @@ function drawAdminModal() {
   // Render options inside modal
   let options = [
     { id: "TEST_MODE", label: "테스트 모드 진입" },
-    { id: "ASSET_VIEWER", label: "에셋 & 이펙트 뷰어" },
     { id: "LOGOUT", label: "어드민 로그아웃" },
     { id: "CLOSE", label: "닫기" }
   ];

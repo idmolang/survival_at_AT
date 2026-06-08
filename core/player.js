@@ -51,7 +51,7 @@ class Player {
   }
   update() {
     let s = this.stats;
-    if (this.hp < s.maxHp) this.hp = min(s.maxHp, this.hp + s.hpRegen);
+    if (this.hp < s.maxHp && frameCount % 60 === 0) this.hp = min(s.maxHp, this.hp + s.hpRegen); // [AI 도움] 초당 체력 재생이 되도록 60프레임 주기로 한정해 벨런스를 맞춤
     if (this.invincibleTimer > 0) this.invincibleTimer--;
 
     let dx = 0;

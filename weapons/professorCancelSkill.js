@@ -29,8 +29,10 @@ class ProfessorCancelSkill extends Weapon {
       // ── 교수님 등장 페이드 연출 ──
       spawnEffect(new ProfessorAppearEffect());
 
-      for (let g of gems) {
-        g.isDead = true; // 삭제 처리 (풀 시스템으로 반환됨)
+      if (!this.isEvolved) {
+        for (let g of gems) {
+          g.isDead = true; // 삭제 처리 (풀 시스템으로 반환됨)
+        }
       }
 
       for (let e of enemies) {

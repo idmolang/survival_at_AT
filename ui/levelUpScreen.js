@@ -353,28 +353,90 @@ function drawLevelUp() {
       text(statItem, cx - 100, itemY);
     }
 
-    // ── 패시브 요구 배지 (하단부) ──
+    // ── [AI 도움] 패시브 요구 아이콘 조합법 배지 (하단부) ──
     if (isWeapon) {
       let reqPassive = choice.info.passiveInfo;
       let pInfo = PASSIVES_INFO.find(p => p.id === reqPassive);
-      let passiveName = pInfo ? pInfo.name : reqPassive;
       
-      let badgeY = cy + cardH / 2 - 38;
-      let badgeW = cardW - 60;
-      let badgeH = 28;
+      let badgeY = cy + cardH / 2 - 42;
+      let badgeW = cardW - 40;
+      let badgeH = 58;
       
       rectMode(CENTER);
-      noFill();
-      stroke(themeR, themeG, themeB, 80);
-      strokeWeight(1);
-      rect(cx, badgeY, badgeW, badgeH, 14);
+      fill(15, 22, 40, 180); // 반투명 배경 박스
+      stroke(themeR, themeG, themeB, isHover ? 180 : 100);
+      strokeWeight(1.5);
+      rect(cx, badgeY, badgeW, badgeH, 12);
       
+      // 소형 텍스트 안내 "진화 조합법"
       noStroke();
-      fill(themeR + (255 - themeR) * 0.3, themeG + (255 - themeG) * 0.3, themeB + (255 - themeB) * 0.3, 190);
-      textSize(11);
-      textStyle(NORMAL);
+      fill(themeR + (255 - themeR) * 0.5, themeG + (255 - themeG) * 0.5, themeB + (255 - themeB) * 0.5, 200);
+      textSize(10);
+      textStyle(BOLD);
+      textAlign(CENTER, TOP);
+      text("진화 조합법", cx, badgeY - badgeH / 2 + 5);
+      
+      // 아이콘 드로잉
+      let iconSize = 28;
+      let wIcon = gameImages.skill_icons ? gameImages.skill_icons[choice.info.icon] : null;
+      let pIcon = gameImages.passive_icons ? gameImages.passive_icons[reqPassive] : null;
+      let hasPassive = player.hasPassive(reqPassive);
+      let iconY = badgeY + 8;
+      
+      imageMode(CENTER);
+      // 1. 무기 아이콘 (왼쪽)
+      if (wIcon) {
+        image(wIcon, cx - 36, iconY, iconSize, iconSize);
+        noFill();
+        stroke(0, 255, 100, 150); // 무기는 항상 보유 중이므로 초록색 테두리
+        strokeWeight(1.5);
+        rect(cx - 36, iconY, iconSize + 2, iconSize + 2, 4);
+      }
+      
+      // 2. 더하기 기호 (중앙)
+      fill(255);
+      textSize(14);
+      textStyle(BOLD);
       textAlign(CENTER, CENTER);
-      text(`패시브: ${passiveName}`, cx, badgeY - 1);
+      text("+", cx, iconY - 1);
+      
+      // 3. 패시브 아이콘 (오른쪽)
+      if (pIcon) {
+        push();
+        if (!hasPassive) {
+          tint(255, 100, 100, 110); // 미보유 시 붉고 반투명하게 어둡게 표시
+        } else {
+          noTint();
+        }
+        image(pIcon, cx + 36, iconY, iconSize, iconSize);
+        pop();
+        
+        // 보유 상태 표시용 테두리 및 미니 배지
+        let badgeSize = 8;
+        let bx = cx + 36 + iconSize / 2 - 2;
+        let by = iconY - iconSize / 2 + 2;
+        
+        noFill();
+        if (hasPassive) {
+          stroke(0, 255, 100, 200); // 보유 중이면 밝은 초록 테두리
+          strokeWeight(2.0);
+          rect(cx + 36, iconY, iconSize + 2, iconSize + 2, 4);
+          
+          // 우측 상단 초록색 미니 원 (체크마크 대용)
+          fill(0, 255, 100);
+          noStroke();
+          ellipse(bx, by, badgeSize, badgeSize);
+        } else {
+          stroke(255, 50, 50, 120); // 미보유면 옅은 빨간 테두리
+          strokeWeight(1.5);
+          rect(cx + 36, iconY, iconSize + 2, iconSize + 2, 4);
+          
+          // 우측 상단 빨간색 미니 원 (X 대용)
+          fill(255, 50, 50);
+          noStroke();
+          ellipse(bx, by, badgeSize, badgeSize);
+        }
+      }
     }
   }
 

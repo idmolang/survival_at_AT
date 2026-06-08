@@ -2,11 +2,11 @@
 class P5jsIconSkill extends Weapon {
   //레벨별 수치 조정
   static LEVEL_DATA = [
-    { dmg: 10, cd: 45, proj: 1, pierce: 0, desc: "가장 가까운 적에게 발사합니다." },
-    { dmg: 12, cd: 36, proj: 2, pierce: 0, desc: "발사체 1개 증가, 쿨타임 감소" },
-    { dmg: 30, cd: 36, proj: 3, pierce: 0, desc: "데미지 증가, 발사체 1개 증가" },
-    { dmg: 35, cd: 28, proj: 3, pierce: 1, desc: "관통력 1 증가, 쿨타임 감소" },
-    { dmg: 60, cd: 28, proj: 4, pierce: 1, desc: "데미지 증가, 발사체 1개 증가" }
+    { dmg: 10, cd: 40, proj: 1, pierce: 0, desc: "가장 가까운 적에게 발사합니다." },
+    { dmg: 12, cd: 32, proj: 2, pierce: 0, desc: "발사체 1개 증가, 쿨타임 감소" },
+    { dmg: 30, cd: 28, proj: 3, pierce: 0, desc: "데미지 증가, 발사체 1개 증가" },
+    { dmg: 35, cd: 24, proj: 3, pierce: 1, desc: "관통력 1 증가, 쿨타임 감소" },
+    { dmg: 60, cd: 20, proj: 4, pierce: 1, desc: "데미지 증가, 발사체 1개 증가" }
   ];
   static EVO_DATA = { dmg: 80, cd: 8, proj: 5, pierce: 2, desc: "딜레이 없이 마법을 난사합니다." };
 

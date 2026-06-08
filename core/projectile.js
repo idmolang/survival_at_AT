@@ -33,6 +33,8 @@ class Projectile {
     // ── 휘파람 화살(최종진화 마우스) 고유 설정 ──
     this.isWhistlingArrow = false;
     this.whistlingHitCooldowns = new Map(); // 적별 다단히트 쿨다운 관리
+    this.isEvolvedMouse = false; // [AI 도움] 최종진화 마우스 여부 마커
+    this.launcher = null;
   }
 
   reset() {
@@ -46,6 +48,8 @@ class Projectile {
     this.homingTarget = null;
     this.isWhistlingArrow = false;
     this.whistlingHitCooldowns = new Map();
+    this.isEvolvedMouse = false; // [AI 도움] 리셋 시 초기화
+    this.launcher = null;
   }
 
   update() {
@@ -90,8 +94,32 @@ class Projectile {
     if (this.isBounce) {
       let camX = player.x - width / 2;
       let camY = player.y - height / 2;
-      if (this.x < camX || this.x > camX + width) this.vx *= -1;
-      if (this.y < camY || this.y > camY + height) this.vy *= -1;
+      let bounced = false;
+
+      if (this.x < camX) {
+        this.vx *= -1;
+        this.x = camX;
+        bounced = true;
+      } else if (this.x > camX + width) {
+        this.vx *= -1;
+        this.x = camX + width;
+        bounced = true;
+      }
+
+      if (this.y < camY) {
+        this.vy *= -1;
+        this.y = camY;
+        bounced = true;
+      } else if (this.y > camY + height) {
+        this.vy *= -1;
+        this.y = camY + height;
+        bounced = true;
+      }
+
+      // [AI 도움] 최종진화된 마우스인 경우 튕겨 나갈 때 가장자리 폭발 트리거
+      if (bounced && this.isEvolvedMouse) {
+        this.triggerMouseExplosion();
+      }
     }
 
     // 이미지 회전 업데이트
@@ -229,6 +257,25 @@ class Projectile {
         this.pierceCount--;
       } else {
         this.isDead = true;
+      }
+    }
+  }
+
+  // ── [AI 도움] 최종진화 마우스가 화면 가장자리에 충돌 시 폭발 및 주변 데미지 적용 ──
+  triggerMouseExplosion() {
+    let rad = 80;
+    // 파란색 네온 쇼크웨이브 및 스파크 연출
+    spawnEffect(new ShockwaveEffect(this.x, this.y, [100, 200, 255], rad));
+    for (let i = 0; i < 6; i++) {
+      spawnEffect(new SparkEffect(this.x, this.y, [100, 200, 255]));
+    }
+
+    // 데미지 판정 적용
+    if (typeof enemies !== 'undefined') {
+      for (let e of enemies) {
+        if (dist(this.x, this.y, e.x, e.y) < rad) {
+          e.takeDamage(this.damage * 0.8, this.x, this.y, 2.0); // 폭발 넉백 적용
+        }
       }
     }
   }

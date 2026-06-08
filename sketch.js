@@ -77,7 +77,6 @@ function draw() {
   else if (gameState === "GAME_OVER") { drawGame(); drawGameOver(); }
   else if (gameState === "GAME_CLEAR") { drawGame(); drawGameClear(); }
   else if (gameState === "TEST_SKILL_SELECT") drawTestSkillSelect();
-  else if (gameState === "ASSET_VIEWER") drawAssetViewer();
 }
 
 function drawGame() {
@@ -210,6 +209,20 @@ function drawGame() {
   // ── 화면 이펙트 (화면 좌표계 - pop() 이후) ──
   updateAndDrawScreenEffects();
 
+  // ── 보스전 위험 알림 빨간색 테두리 ──
+  if (bossActive) {
+    push();
+    rectMode(CORNER); // CORNER로 강제 설정하여 화면 테두리에 정확히 밀착
+    noFill();
+    let borderPulse = sin(frameCount * 0.1);
+    let borderAlpha = 100 + borderPulse * 50;
+    let borderW = 20 + borderPulse * 8;
+    stroke(255, 30, 30, borderAlpha);
+    strokeWeight(borderW);
+    rect(0, 0, width, height);
+    pop();
+  }
+
   // ── 보스전 에픽 경고 배너 렌더링 (화면 좌표계) ──
   if (bossActive && bossWarningTimer > 0) {
     bossWarningTimer--;
@@ -266,7 +279,7 @@ function mousePressed() {
     
     if (showAdminModal) {
       let mW = 400;
-      let mH = 320;
+      let mH = 260; // [AI 도움] 옵션 축소에 맞춰 모달 높이 조절
       let mX = (width - mW) / 2;
       let mY = (height - mH) / 2;
       
@@ -276,7 +289,6 @@ function mousePressed() {
       
       let options = [
         { id: "TEST_MODE" },
-        { id: "ASSET_VIEWER" },
         { id: "LOGOUT" },
         { id: "CLOSE" }
       ];
@@ -291,10 +303,6 @@ function mousePressed() {
           if (opt.id === "TEST_MODE") {
             testSelectedWeapons = []; testSelectedPassives = []; isTestModeWeaponSelect = true;
             gameState = "TEST_SKILL_SELECT";
-            showAdminModal = false;
-          } else if (opt.id === "ASSET_VIEWER") {
-            gameState = "ASSET_VIEWER";
-            initAssetViewer();
             showAdminModal = false;
           } else if (opt.id === "LOGOUT") {
             isAdmin = false;
@@ -344,8 +352,6 @@ function mousePressed() {
         }
       }
     }
-  } else if (gameState === "ASSET_VIEWER") {
-    assetViewerMousePressed();
   } else if (gameState === "HOW_TO_PLAY" || gameState === "GAME_OVER" || gameState === "GAME_CLEAR") {
     if (gameState === "HOW_TO_PLAY") {
       let s = min(width / 1200, height / 800);
@@ -392,7 +398,7 @@ function mousePressed() {
         for (let pInfo of testSelectedPassives) {
           let p = new Passive(pInfo.name, pInfo.id); p.level = 5; player.addPassive(p);
         }
-        gameFrames = 50400;
+        gameFrames = 53000;
         gameState = "IN_GAME";
       }
     }
@@ -505,7 +511,7 @@ function keyPressed() {
 function handleBGM() {
   let targetBgmName = null;
   
-  if (gameState === "LOBBY" || gameState === "HOW_TO_PLAY" || gameState === "TEST_SKILL_SELECT" || gameState === "ASSET_VIEWER") {
+  if (gameState === "LOBBY" || gameState === "HOW_TO_PLAY" || gameState === "TEST_SKILL_SELECT") {
     targetBgmName = "lobby";
   } else if (gameState === "IN_GAME" || gameState === "LEVEL_UP") {
     if (bossActive) {
