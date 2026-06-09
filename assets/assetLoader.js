@@ -13,6 +13,7 @@ function preload() {
   gameImages.how_to_play = loadImage('assets/images/how_to_play.png');
   gameImages.map_bg = loadImage('assets/images/map_bg.jpg'); // [AI 도움] 인게임 타일 맵 배경 이미지 로드
   gameImages.intro_comic = loadImage('assets/images/intro_comic.jpg');
+  gameImages.clear_comic = loadImage('assets/images/clear_comic.jpg');
 
   // 발사체 비주얼 아이콘
   gameImages.p5js = loadImage('assets/images/p5js.png');

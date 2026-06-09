@@ -383,11 +383,13 @@ function mousePressed() {
       if (lx >= btnX - btnW/2 && lx <= btnX + btnW/2 && ly >= btnY - btnH/2 && ly <= btnY + btnH/2) {
         gameState = "LOBBY";
       }
-    } else {
+    } else if (gameState === "GAME_OVER") {
       let bx = width / 2; let by = height / 2 + 160; let bw = 250; let bh = 60;
       if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
         gameState = "LOBBY";
       }
+    } else if (gameState === "GAME_CLEAR") {
+      handleClearStoryClick();
     }
   } else if (gameState === "TEST_SKILL_SELECT") {
     let list = isTestModeWeaponSelect ? WEAPONS_INFO : PASSIVES_INFO;
@@ -484,6 +486,10 @@ function keyPressed() {
     if (keyCode === ESCAPE) {
       startGameDirectly();
     }
+  } else if (gameState === "GAME_CLEAR") {
+    if (keyCode === ESCAPE) {
+      gameState = "LOBBY";
+    }
   } else if (gameState === "LOBBY") {
     if (showPasswordInput) {
       if (keyCode === BACKSPACE) {
@@ -539,7 +545,7 @@ function keyPressed() {
 function handleBGM() {
   let targetBgmName = null;
   
-  if (gameState === "LOBBY" || gameState === "HOW_TO_PLAY" || gameState === "TEST_SKILL_SELECT" || gameState === "INTRO_STORY") {
+  if (gameState === "LOBBY" || gameState === "HOW_TO_PLAY" || gameState === "TEST_SKILL_SELECT" || gameState === "INTRO_STORY" || gameState === "GAME_CLEAR") {
     targetBgmName = "lobby";
   } else if (gameState === "IN_GAME" || gameState === "LEVEL_UP") {
     if (bossActive) {
