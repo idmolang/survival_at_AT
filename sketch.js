@@ -409,13 +409,7 @@ function mousePressed() {
     if (mouseX > btnX - btnW / 2 && mouseX < btnX + btnW / 2 && mouseY > btnY - btnH / 2 && mouseY < btnY + btnH / 2) {
       if (isTestModeWeaponSelect) isTestModeWeaponSelect = false;
       else {
-        initGame(); player.weapons = []; player.passives = [];
-        for (let wInfo of testSelectedWeapons) {
-          let w = new wInfo.class(player); w.level = 5; player.addWeapon(w);
-        }
-        for (let pInfo of testSelectedPassives) {
-          let p = new Passive(pInfo.name, pInfo.id); p.level = 5; player.addPassive(p);
-        }
+        initGame();
         isTestMode = true;
         gameFrames = 0;
         gameState = "IN_GAME";
@@ -536,6 +530,20 @@ function keyPressed() {
     if (key === 'p' || key === 'P') {
       gameFrames = 50400; // 14 minutes (14 * 60 * 60 = 50400 frames)
       console.log("Test mode cheat: gameFrames set to 50400 (14 minutes)");
+      
+      // Clear current inventory and add the selected test weapons & passives at level 5
+      player.weapons = [];
+      player.passives = [];
+      for (let wInfo of testSelectedWeapons) {
+        let w = new wInfo.class(player);
+        w.level = 5;
+        player.addWeapon(w);
+      }
+      for (let pInfo of testSelectedPassives) {
+        let p = new Passive(pInfo.name, pInfo.id);
+        p.level = 5;
+        player.addPassive(p);
+      }
     }
   }
 
