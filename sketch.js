@@ -27,6 +27,7 @@ let skillChoices = [];
 let testSelectedWeapons = [];
 let testSelectedPassives = [];
 let isTestModeWeaponSelect = true;
+let isTestMode = false;
 let rerollCount = 3;
 
 let bossActive = false;
@@ -40,6 +41,12 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   if (gameImages.usb_raw) {
     gameImages.usb = processUsbImage(gameImages.usb_raw);
+  }
+  if (gameImages.clear_a_plus_raw) {
+    gameImages.clear_a_plus = makeWhiteTransparent(gameImages.clear_a_plus_raw);
+  }
+  if (gameImages.gameover_f_raw) {
+    gameImages.gameover_f = makeWhiteTransparent(gameImages.gameover_f_raw);
   }
   initPools();
   initGame();
@@ -57,6 +64,7 @@ function initGame() {
   enemies = []; damageTexts = []; gems = []; projectiles = [];
   score = 0; level = 1; currentLevelStartExp = 0; nextLevelExp = 50;
   gameFrames = 0;
+  isTestMode = false;
   rerollCount = 3;
   clearEffects(); // 이펙트 풀 리셋
   player.addWeapon(new P5jsIconSkill(player));
@@ -72,6 +80,7 @@ function draw() {
   cursor(ARROW);
   if (gameState === "LOBBY") drawLobby();
   else if (gameState === "HOW_TO_PLAY") drawHowToPlay();
+  else if (gameState === "INTRO_STORY") drawIntroStory();
   else if (gameState === "IN_GAME") drawGame();
   else if (gameState === "LEVEL_UP") { drawGame(); drawLevelUp(); }
   else if (gameState === "GAME_OVER") { drawGame(); drawGameOver(); }
@@ -151,11 +160,12 @@ function drawGame() {
 
       if (e.hp >= e.maxHp) {
         if (e instanceof Boss) {
+          console.log("GAME_CLEAR triggered in sketch.js: Boss HP is " + e.hp + "/" + e.maxHp);
           gameState = "GAME_CLEAR";
           continue;
         }
         if (!e.noGemDrop) {
-          if (random() < 0.10) {
+          if (random() < 0.01) {
             gems.push(gemPool.get(e.x, e.y, 0, "HEAL"));
           } else {
             gems.push(gemPool.get(e.x, e.y, e.expValue, "EXP"));
@@ -334,7 +344,7 @@ function mousePressed() {
     if (gameImages.background) {
       // 1. 게임 시작 (START GAME)
       if (lx >= 613 && lx <= 1058 && ly >= 623 && ly <= 693) {
-        initGame(); gameState = "IN_GAME";
+        initIntroStory(); gameState = "INTRO_STORY";
       }
       // 2. 게임 방법 (HOW TO PLAY)
       else if (lx >= 613 && lx <= 1058 && ly >= 723 && ly <= 793) {
@@ -343,7 +353,7 @@ function mousePressed() {
     } else {
       // 1. 게임 시작 (START GAME)
       if (lx >= 440 && lx <= 760 && ly >= 530 && ly <= 590) {
-        initGame(); gameState = "IN_GAME";
+        initIntroStory(); gameState = "INTRO_STORY";
       }
       // 2. 게임 방법 (HOW TO PLAY)
       else if (lx >= 440 && lx <= 760 && ly >= 615 && ly <= 675) {
@@ -356,6 +366,8 @@ function mousePressed() {
         }
       }
     }
+  } else if (gameState === "INTRO_STORY") {
+    handleIntroStoryClick();
   } else if (gameState === "HOW_TO_PLAY" || gameState === "GAME_OVER" || gameState === "GAME_CLEAR") {
     if (gameState === "HOW_TO_PLAY") {
       let s = min(width / 1200, height / 800);
@@ -372,7 +384,7 @@ function mousePressed() {
         gameState = "LOBBY";
       }
     } else {
-      let bx = width / 2; let by = height / 2 + 80; let bw = 250; let bh = 60;
+      let bx = width / 2; let by = height / 2 + 160; let bw = 250; let bh = 60;
       if (mouseX > bx - bw / 2 && mouseX < bx + bw / 2 && mouseY > by - bh / 2 && mouseY < by + bh / 2) {
         gameState = "LOBBY";
       }
@@ -402,7 +414,8 @@ function mousePressed() {
         for (let pInfo of testSelectedPassives) {
           let p = new Passive(pInfo.name, pInfo.id); p.level = 5; player.addPassive(p);
         }
-        gameFrames = 53000;
+        isTestMode = true;
+        gameFrames = 0;
         gameState = "IN_GAME";
       }
     }
@@ -435,6 +448,7 @@ function windowResized() {
 }
 
 function startBossBattle() {
+  console.log("startBossBattle called!");
   bossActive = true;
   bossWarningTimer = 180; // 3초간 배너 활성화
 
@@ -466,7 +480,11 @@ function isOnScreen(x, y, margin = 100) {
 
 function keyPressed() {
   userStartAudio(); // [AI 도움] 키보드 입력 시에도 오디오 맥락을 활성화합니다
-  if (gameState === "LOBBY") {
+  if (gameState === "INTRO_STORY") {
+    if (keyCode === ESCAPE) {
+      startGameDirectly();
+    }
+  } else if (gameState === "LOBBY") {
     if (showPasswordInput) {
       if (keyCode === BACKSPACE) {
         enteredPassword = enteredPassword.slice(0, -1);
@@ -508,14 +526,20 @@ function keyPressed() {
         triggerReroll();
       }
     }
+  } else if (gameState === "IN_GAME" && isTestMode) {
+    if (key === 'p' || key === 'P') {
+      gameFrames = 50400; // 14 minutes (14 * 60 * 60 = 50400 frames)
+      console.log("Test mode cheat: gameFrames set to 50400 (14 minutes)");
+    }
   }
+
 }
 
 // ── [AI 도움] 상황별 BGM을 재생/전환하는 제어 함수 ──
 function handleBGM() {
   let targetBgmName = null;
   
-  if (gameState === "LOBBY" || gameState === "HOW_TO_PLAY" || gameState === "TEST_SKILL_SELECT") {
+  if (gameState === "LOBBY" || gameState === "HOW_TO_PLAY" || gameState === "TEST_SKILL_SELECT" || gameState === "INTRO_STORY") {
     targetBgmName = "lobby";
   } else if (gameState === "IN_GAME" || gameState === "LEVEL_UP") {
     if (bossActive) {

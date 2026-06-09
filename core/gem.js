@@ -27,7 +27,7 @@ class Gem {
         this.isDead = true;
         this.collected = true;
         if (this.type === "HEAL") {
-          let healAmount = 25; // 25 HP 회복
+          let healAmount = 10; // 10 HP 회복
           player.hp = min(player.stats.maxHp, player.hp + healAmount);
           damageTexts.push(damageTextPool.get(player.x, player.y - 30, `+${healAmount} HP`));
         } else {
@@ -43,11 +43,11 @@ class Gem {
       fill(255, 50, 50); // 빨간색 하트
       stroke(255, 150, 150); // 분홍색 광택
       strokeWeight(1.5);
-      
+
       // 하트 맥박 애니메이션
       let scaleRatio = 1.0 + sin(frameCount * 0.1) * 0.15;
       scale(scaleRatio);
-      
+
       // 하트 그리기
       beginShape();
       vertex(0, -4);

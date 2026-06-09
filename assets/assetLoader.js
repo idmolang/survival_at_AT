@@ -12,6 +12,7 @@ function preload() {
   gameImages.background = loadImage('assets/images/content.png');
   gameImages.how_to_play = loadImage('assets/images/how_to_play.png');
   gameImages.map_bg = loadImage('assets/images/map_bg.jpg'); // [AI 도움] 인게임 타일 맵 배경 이미지 로드
+  gameImages.intro_comic = loadImage('assets/images/intro_comic.jpg');
 
   // 발사체 비주얼 아이콘
   gameImages.p5js = loadImage('assets/images/p5js.png');
@@ -109,6 +110,10 @@ function preload() {
   // 보스 이미지
   gameImages.boss = loadImage('assets/images/boss.png');
 
+  // 클리어/오버 화면에 대문짝만하게 박을 손글씨 이미지
+  gameImages.clear_a_plus_raw = loadImage('assets/images/clear_a_plus.png');
+  gameImages.gameover_f_raw = loadImage('assets/images/gameover_f.png');
+
   // [AI 도움] 각 상황별 BGM 파일 로드
   soundFormats('mp3');
   gameSounds.lobby = loadSound('assets/bgm/lobby.mp3');
@@ -145,6 +150,42 @@ function processUsbImage(img) {
       processed.pixels[i + 1] = g;
       processed.pixels[i + 2] = b;
       processed.pixels[i + 3] = a;
+    }
+  }
+  processed.updatePixels();
+  return processed;
+}
+
+// 흰색/밝은 배경을 투명하게 지우고 컬러선만 추출하는 필터 (적색 필터링 및 부드러운 가장자리 처리)
+function makeWhiteTransparent(img) {
+  let processed = createImage(img.width, img.height);
+  img.loadPixels();
+  processed.loadPixels();
+
+  for (let i = 0; i < img.pixels.length; i += 4) {
+    let r = img.pixels[i];
+    let g = img.pixels[i + 1];
+    let b = img.pixels[i + 2];
+    let a = img.pixels[i + 3];
+
+    // 적색 채도(Redness) 계산: 초록색과 파란색 대비 빨간색이 얼마나 강한지
+    let redness = min(r - g, r - b);
+
+    if (redness < 20) {
+      // 적색이 거의 없는 무채색(흰색, 회색, 어두운 그림자 등) 배경은 완전히 투명화
+      processed.pixels[i] = 0;
+      processed.pixels[i + 1] = 0;
+      processed.pixels[i + 2] = 0;
+      processed.pixels[i + 3] = 0;
+    } else {
+      // 적색이 강할수록 불투명해지도록 알파값을 부드럽게 맵핑 (안티앨리어싱 효과)
+      let alphaFactor = map(redness, 20, 60, 0, 1, true);
+
+      // 빨간색 강도는 유지하되, 주변부의 흰색/회색기가 도는 탁한 색(G, B)을 지워줌
+      processed.pixels[i] = r;
+      processed.pixels[i + 1] = g * (1 - alphaFactor);
+      processed.pixels[i + 2] = b * (1 - alphaFactor);
+      processed.pixels[i + 3] = a * alphaFactor;
     }
   }
   processed.updatePixels();

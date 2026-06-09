@@ -6,6 +6,7 @@
 class Boss extends Enemy {
   constructor(px, py) {
     super();
+    console.log("Boss instantiated! Current gameFrames is " + gameFrames);
     this.x = px;
     this.y = py;
     this.speed = 1.0;
@@ -52,6 +53,7 @@ class Boss extends Enemy {
 
     // 클리어 조건 검사
     if (this.hp >= this.maxHp) {
+      console.log("GAME_CLEAR triggered in core/boss.js: Boss HP is " + this.hp + "/" + this.maxHp);
       this.hp = this.maxHp;
       gameState = "GAME_CLEAR";
     }
@@ -130,7 +132,7 @@ class Boss extends Enemy {
           minion.noGemDrop = true;
 
           enemies.push(minion);
-          
+
           // 소환 충격파 연출
           spawnEffect(new ShockwaveEffect(spawnX, spawnY, [255, 50, 50], 100));
         }
@@ -232,7 +234,7 @@ class Boss extends Enemy {
       }
       else if (this.patternTimer >= 40 && this.patternTimer < 70) {
         this.warnings = [];
-        
+
         // 고속 돌진
         this.x += cos(this.dashAngle) * 18;
         this.y += sin(this.dashAngle) * 18;
@@ -287,7 +289,7 @@ class Boss extends Enemy {
     if (gameImages.boss) {
       // boss.png 이미지 드로잉
       imageMode(CENTER);
-      image(gameImages.boss, 0, 0, 180, 180);
+      image(gameImages.boss, 0, 0, 150, 200);
     } else {
       // fallback
       fill(180);
@@ -330,10 +332,10 @@ class Boss extends Enemy {
       noStroke();
       fill(255, 255, 255, 230);
       rect(0, -90, 140, 36, 12);
-      
+
       // 말풍선 아래 꼬리침
       triangle(-8, -72, 8, -72, 0, -62);
-      
+
       fill(20, 20, 30);
       textAlign(CENTER, CENTER);
       textSize(15);
@@ -460,10 +462,10 @@ class BossProjectile {
 
       if (this.y >= this.targetY) {
         this.isDead = true;
-        
+
         let explosionRad = (this.type === "THESIS") ? 95 : 65;
         let shockwaveColor = (this.type === "THESIS") ? [100, 150, 255] : [255, 80, 50]; // 전공책은 파란 충격파
-        
+
         spawnEffect(new ShockwaveEffect(this.targetX, this.targetY, shockwaveColor, explosionRad));
         for (let i = 0; i < (this.type === "THESIS" ? 8 : 5); i++) {
           spawnEffect(new SparkEffect(this.targetX, this.targetY, shockwaveColor));
@@ -483,11 +485,11 @@ class BossProjectile {
       // Y축 낙하 진행율에 따라 경고 영역 점차 축소 및 진해짐
       let animRatio = constrain((this.targetY - this.y) / 500.0, 0, 1);
       let rad = (this.type === "THESIS") ? 95 : 65;
-      
+
       noStroke();
       fill(255, 50, 50, 45 * (2 - animRatio)); // 가까워질수록 불투명해짐
       ellipse(this.targetX, this.targetY, rad * 2, rad * 2);
-      
+
       noFill();
       stroke(255, 50, 50, 180 * (2 - animRatio));
       strokeWeight(2);
@@ -504,10 +506,10 @@ class BossProjectile {
       textAlign(CENTER, CENTER);
       textSize(32 + sin(frameCount * 0.15) * 4);
       textStyle(BOLD);
-      
+
       drawingContext.shadowColor = 'rgba(255, 0, 0, 0.8)';
       drawingContext.shadowBlur = 15;
-      
+
       stroke(0);
       strokeWeight(3.5);
       fill(255, 50, 50);
@@ -531,22 +533,22 @@ class BossProjectile {
       // 전공책 이미지 그리기
       rotate(frameCount * 0.1);
       rectMode(CENTER);
-      
+
       // 커버
       fill(45, 90, 200); // 파란 전공책 표지
       stroke(255, 215, 0); // 금색 테두리
       strokeWeight(2.5);
       rect(0, 0, 32, 42, 3);
-      
+
       // 내지
       fill(240);
       noStroke();
       rect(13, 0, 3, 36);
-      
+
       // 책등 금장 제목선
       fill(255, 215, 0);
       rect(-10, 0, 4, 32);
-      
+
       // 책갈피 끈
       fill(255, 50, 50);
       triangle(-2, 18, 4, 18, 1, 26);
